@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_student_reviewExam.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Student</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("student");
+		
+			function GetAllReviewExams() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!");
+						console.log(this.responseText);
+						if(this.responseText == "userName not set"){
+							return;
+						}
+						var jList = JSON.parse(this.responseText);
+						for(jObj of jList){
+							document.getElementById("examsToReview").innerHTML += "<div class='exam' id='" + jObj.exam_id + "'></div>"
+							document.getElementById(jObj.exam_id).innerHTML += "<p>ExamID: " + jObj.exam_id + "</p>";
+							document.getElementById(jObj.exam_id).innerHTML += "<p>InstructorID: </p>" + jObj.instructor + "</p>";
+							document.getElementById(jObj.exam_id).innerHTML += "<p>Points: " + jObj.points + "</p>";
+							document.getElementById(jObj.exam_id).innerHTML += "<p>Total: </p>" + jObj.total + "</p>";
+							document.getElementById(jObj.exam_id).innerHTML += "<button type='button' onclick='ReviewExam(" + jObj.exam_id + ")'>Review Exam</button>\n";
+						}
+						
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSReview.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
+			
+			
+			GetAllReviewExams();
+
+			function ReviewExam(examID) {
+				var sendStr = "examID=" + examID;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!")
+						if(this.responseText == "allow"){
+							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_actuallyReviewExam.html";
+						}else{
+							console.log(this.responseText);
+						}
+					}
+				}
+				xhttp.open("POST","reviewExam.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+      }
+
+
+			function SetCollapsible(theBt) {
+				var content = theBt.nextElementSibling;
+				if(content.style.display === "block"){
+					content.style.display = "none";
+				}else{
+					content.style.display = "block";
+				}
+			}
+			
+			
+			window.onload = function(){
+				document.getElementById("backButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_start.html";
+				};
+			}
+			
+		</script>
+		
+	
+		<form action="">
+		
+			<button type="button" id="backButton">Back to Start Page</button>
+
+			<div id="examsToReview">
+				
+			</div>
+	
+		</form>
+
+	</body>
+</html>

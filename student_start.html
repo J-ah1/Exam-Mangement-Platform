@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_student_start.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Student</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("student");
+		
+			// Logout Button
+		
+			window.onload = function(){
+				document.getElementById("takeExamButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_takeExam.html";
+				};
+				document.getElementById("reviewExamButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_reviewExam.html";
+				};
+			};
+				
+		</script>
+		
+		<form>
+			<div>
+				<button type="button" id="takeExamButton">Take Exams</button>
+				<br>
+				<button type="button" id="reviewExamButton">Review Exams</button>
+				<br>
+			</div>
+		</form>
+
+	</body>
+</html>

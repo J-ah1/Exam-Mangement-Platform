@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_instructor_examCreate.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Instructor</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("instructor");
+		
+		
+			function GetAllQuestions(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log(this.responseText);
+						console.log("Attempted to send!");
+						if(this.responseText == "examData not set"){
+							return;
+						}
+						var questionBank = this.responseText.split("~");
+						questionBank.pop();
+						console.log(questionBank);
+						for(question of questionBank){
+							console.log(question);
+							var questionArray = question.split("\n");
+							console.log(questionArray);
+							document.getElementById("queriedQuestions").innerHTML += "\n";
+							document.getElementById("queriedQuestions").innerHTML += "<div class='question' id='placeholderID'></div>";
+							var newQuestionID = questionArray[0];
+							document.getElementById("placeholderID").id = newQuestionID;
+							document.getElementById(newQuestionID).innerHTML += "<input id='questionCheck' type='checkbox' onchange='UpdateTotal()'>";
+							document.getElementById(newQuestionID).innerHTML += "<p>"+questionArray[1]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Difficulty: "+questionArray[2]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Topic: "+questionArray[3]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Requirements: "+questionArray[4]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+questionArray[5]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+questionArray[6]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "Assign Point Value: <input id='questionPoints' type='text' required pattern='[0-9]{1,3}' onchange='UpdateTotal()'>";
+						}
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTA.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
+			GetAllQuestions();
+			
+			function SubmitExam(){
+
+				var examData = ""
+				for(e of document.getElementsByClassName("question")){
+					console.log(e.childNodes);
+					if(e.childNodes[0].checked == true){
+						if(!Number.isInteger(parseInt(e.childNodes[14].value))){
+							document.getElementById("words").innerHTML = "All point values must be assigned correctly!";
+							return;
+						}
+						examData += e.id + "," + e.childNodes[14].value + ":";
+					}
+				}
+				if(examData.length > 0){
+					examData = examData.substring(0, examData.length -1);
+				}				
+				
+				//examData += "*" + document.getElementById("totalPoints").innerHTML;
+				var sendStr = "exam=" + examData;
+				console.log(sendStr);
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!")
+						console.log(this.responseText);
+						if(this.responseText != "invalid_form"){
+							console.log("Redirected!");
+							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+						}
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTE.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+			}
+			
+			function UpdateTotal(){
+				var newTotal = 0;
+				for(e of document.getElementsByClassName("question")){
+					if(e.childNodes[0].checked == true){
+						var pointValue = parseInt(e.childNodes[14].value);
+						if(Number.isInteger(pointValue)){
+							newTotal += pointValue;
+						}
+					}
+				}
+				document.getElementById("totalPoints").innerHTML = newTotal;
+			}
+			
+			window.onload = function(){
+				document.getElementById("backButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+				};
+			}
+			
+		</script>
+		
+	
+		<form action="">
+			<button type="button" id="backButton">Back to Start Page</button>
+			<br>
+			
+			<!-- Exam Creation -->
+			Exam Creation Section
+			<div>
+				Search question bank... 
+				<!-- using keywords ie. buttons / text input -->
+				<!-- add selected questions to a list -->
+				<br><br>
+				
+				All Questions...
+				<div id="queriedQuestions">
+					
+				</div>
+				
+				Total Points
+				<p id="totalPoints">0</p>
+				<p id="words"></p>
+				<button type="button" onclick="SubmitExam()">Submit Exam</button>
+				
+			</div>
+			
+		</form>
+
+	</body>
+</html>

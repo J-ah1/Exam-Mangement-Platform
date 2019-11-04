@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_student_actuallyReviewExam.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Student</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("student");
+		
+			function SetupReview() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!");
+						console.log(this.responseText);
+						
+						
+						// First, we'll need to place the exam id at the top...
+						// technically can do this later
+						// Afterwards, go through questions json and display questions
+						
+						var jList = JSON.parse(this.responseText);
+						for(jObj of jList){
+							document.getElementById("questionsToGrade").innerHTML += "<div class='question id='"+ jObj.question_id + "'></div>";
+							document.getElementById(jObj.question_id).innerHTML += "<p>Question: " + jObj.question_text + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p>Response: " + jObj.response + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p>Score: " + jObj.points + " out of " + jObj.total + " </p>" ;
+							document.getElementById(jObj.question_id).innerHTML += "<p>Comment: " + jObj.comment + "</textarea>";
+							document.getElementById("totalPoints").innerHTML = parseInt(document.getElementById("totalPoints").innerHTML) + parseInt(jObj.points);
+							document.getElementById("totalTotals").innerHTML = parseInt(document.getElementById("totalTotals").innerHTML) + parseInt(jObj.total);
+						}
+						
+						
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSSetupReview.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
+			SetupReview();
+
+
+			window.onload = function(){
+				document.getElementById("backButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_reviewExam.html";
+				};
+			}
+	
+			
+		</script>
+		
+	
+		<form action="">
+		
+			<button type="button" id="backButton">Back to Review Exam Page</button>
+		
+			<div id="examInfo">
+			
+			</div>
+
+			<div id="questionsToReview">
+				Insert Questions here
+			</div>
+			
+			Student Total Points
+			<p id="totalPoints">0</p>
+			Total Possible Points
+			<p id="totalTotals">0</p>
+	
+		</form>
+
+	</body>
+</html>

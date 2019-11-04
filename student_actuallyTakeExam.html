@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_student_actuallyTakeExam.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Student</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("student");
+			
+			function SetupExam(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Setting up exam...");
+						console.log(this.responseText);
+						if(this.responseText == "examTakingID not set"){
+							return;
+						}
+						var examQuestions = this.responseText.split("~");
+						examQuestions.pop();
+						console.log(examQuestions);
+						for(question of examQuestions){
+							console.log(question);
+							var questionArray = question.split("\n");
+							console.log(questionArray);
+							document.getElementById("examQuestions").innerHTML += "\n";
+							document.getElementById("examQuestions").innerHTML += "<div class='question' id='placeholderID'></div>";
+							var newQuestionID = questionArray[0];
+							document.getElementById("placeholderID").id = newQuestionID;
+							document.getElementById(newQuestionID).innerHTML += "<p>"+questionArray[1]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Point Value: "+questionArray[2]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<textarea name='studentResponse' rows='16' cols='80' required></textarea>";
+						}
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSSetup.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+			}
+			
+			//POSTING: Type, checking if allowed
+			function CheckCanTakeExam(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Checking if user can take exam...");
+						console.log(this.responseText);
+						switch (this.responseText){
+							case "allowed":
+								SetupExam();
+								break;
+							default:
+								document.getElementById("words").innerHTML = "Exam not set. Can't take exam.";
+								break;
+						}
+					}
+				}
+				xhttp.open("POST","checkCanTakeExam.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+			}
+			
+			CheckCanTakeExam();
+			
+			function UnsetExamTakingID(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Unsetting ExamTakingID...");
+						console.log(this.responseText);
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSId.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+			}
+			
+			window.onbeforeunload = UnsetExamTakingID;
+
+			function SubmitStudentExam(){
+				
+				var responseVal = "";
+				for(e of document.getElementsByName("studentResponse")){
+					responseVal += e.value + "~~~";
+				}
+				if(responseVal.length > 0){
+					responseVal = responseVal.substring(0, responseVal.length -3);
+				}
+				
+				var sendStr = "response=" + responseVal;
+				
+				console.log(sendStr);
+				
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Submitting Exam...");
+						console.log(this.responseText);
+						UnsetExamTakingID();
+						window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_takeExam.html";
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSSubmit.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+			
+				
+				
+			}
+
+		</script>
+		
+		<form>
+			<p id="words"></p>
+			<div id="examQuestions">
+				Note: Use 3 spaces to represent a tab and press enter before new lines.
+			</div>
+			<button type="button" id="submitButton" onclick="SubmitStudentExam()">Submit Exam</button>
+		</form>
+
+	</body>
+</html>

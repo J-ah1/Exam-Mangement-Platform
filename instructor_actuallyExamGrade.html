@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_instructor_actuallyExamGrade.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Instructor</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("instructor");
+		
+			function SetupGrading() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!");
+						console.log(this.responseText);
+						
+						
+						// First, we'll need to place the student and exam id at the top...
+						// technically can do this later
+						// Afterwards, go through questions json and display questions
+						
+						var jList = JSON.parse(this.responseText);
+						for(jObj of jList){
+							document.getElementById("questionsToGrade").innerHTML += "<div class='question' id='"+ jObj.question_id + "'></div>";
+							document.getElementById(jObj.question_id).innerHTML += "<p>Question: " + jObj.question_text + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p>Response: </p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p style='white-space: pre'>" + jObj.response + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p>Score: <input class='points' type='text' value='" + jObj.points + "' onchange='UpdateTotal()'> out of " + jObj.total + " </p>" ;
+							document.getElementById(jObj.question_id).innerHTML += "<p>Comment: </p><textarea class='comment' rows='10' cols='60'>" + jObj.comment + "</textarea>";
+							document.getElementById("totalTotals").innerHTML = parseInt(document.getElementById("totalTotals").innerHTML) + parseInt(jObj.total);
+						}
+						if(document.getElementsByClassName("points")){
+							UpdateTotal();
+						}
+						
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBTSetup.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
+			SetupGrading();
+
+			function UpdateExam() {
+			
+				var pointsVal = "";
+				for(e of document.getElementsByClassName("points")){
+					if(!Number.isInteger(e.value)){
+						document.getElementById("words").innerHTML = "All point values must be assigned correctly!";
+						return;
+					}
+					pointsVal += e.value + ",";
+				}
+				if(pointsVal.length > 0){
+						pointsVal = pointsVal.substring(0, pointsVal.length -1);
+				}
+			
+				var commentVal = "";
+				for(e of document.getElementsByClassName("comment")){
+					commentVal += e.value + "~~~";
+				}
+				if(commentVal.length > 0){
+					commentVal = commentVal.substring(0, commentVal.length -3);
+				}
+			
+				var sendStr = "points=" + pointsVal + "&comments=" + commentVal;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!");
+						console.log(this.responseText);
+						if(this.responseText != "fields not properly set"){
+							console.log("Redirected!");
+							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examGrade.html";
+						}
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBTUpdate.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+      }
+			
+			function UpdateTotal(){
+				var newTotal = 0;
+				for(e of document.getElementsByClassName("points")){
+					var pointValue = parseInt(e.value);
+					if(Number.isInteger(pointValue)){
+						newTotal += pointValue;
+					}
+				}
+				document.getElementById("totalPoints").innerHTML = newTotal;
+			}
+			
+
+			window.onload = function(){
+				document.getElementById("backButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examGrade.html";
+				};
+			}
+			
+			
+		</script>
+		
+	
+		<form action="">
+		
+			<button type="button" id="backButton">Back to Exam Grade Page</button>
+		
+			<div id="examStudInfo">
+			
+			</div>
+
+			<div id="questionsToGrade">
+				
+			</div>
+			
+			Student Total Points
+			<p id="totalPoints">0</p>
+			Total Possible Points
+			<p id="totalTotals">0</p>
+			<p id="words"></p>
+			<button type="button" onclick="UpdateExam()">Update Exam</button>
+	
+		</form>
+
+	</body>
+</html>

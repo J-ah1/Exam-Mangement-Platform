@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_instructor_examGrade.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Instructor</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("instructor");
+		
+		
+			// POSTING: Type, send values & receive JSON response
+			function GetAllInstructorExams() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!");
+						if(this.responseText == "userName not set"){
+							return;
+						}
+						var jList = JSON.parse(this.responseText);
+						for(jObj of jList){
+							if(document.getElementById(jObj.exam_id) == null){
+								document.getElementById("examsToGrade").innerHTML += "<div class='exam' id='" + jObj.exam_id + "'></div>";
+							}
+							var examStudID = jObj.exam_id + "_" + jObj.student;
+							document.getElementById(jObj.exam_id).innerHTML += "<div class='exam_stud' id='" + examStudID + "'></div>";
+							document.getElementById(examStudID).innerHTML += "<p>ExamID: " + jObj.exam_id + "</p>";
+							document.getElementById(examStudID).innerHTML += "<p>StudentID: </p>" + jObj.student + "</p>";
+							document.getElementById(examStudID).innerHTML += "<p>Points: " + jObj.points + "</p>";
+							document.getElementById(examStudID).innerHTML += "<p>Total: </p>" + jObj.total + "</p>";
+							document.getElementById(examStudID).innerHTML += "<button type='button' onclick='GradeExam(" + jObj.exam_id + ",\"" + jObj.student + "\")'>Grade Student Exam</button>\n";
+						}
+						for(e of document.getElementsByClassName("exam")){
+							e.innerHTML += "<button type='button' onclick='FinalizeExam(" + e.id + ")'>Finalize Exam Grades</button>";
+						}
+						
+						
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBTAllExam.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
+			
+			
+			GetAllInstructorExams();
+
+
+			//POSTING: Type, checking if allowed
+			function GradeExam(examID, studentID) {
+				var sendStr = "examID=" + examID + "&studentID=" + studentID;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!")
+						if(this.responseText == "allow"){
+							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_actuallyExamGrade.html";
+						}else{
+							console.log(this.responseText);
+						}
+					}
+				}
+				xhttp.open("POST","gradeExam.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+      }
+			
+			//POSTING: Type, gather values & send values
+			function FinalizeExam(examID) {
+				var sendStr = "examID=" + examID;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!")
+						if(this.responseText == "examID not set"){
+							return;
+						}
+						location.reload();
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBTFinalize.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+      }
+			
+			window.onload = function(){
+				document.getElementById("backButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+				};
+			}
+			
+		</script>
+		
+	
+		<form action="">
+		
+			<button type="button" id="backButton">Back to Start Page</button>
+
+			<div id="examsToGrade">
+				
+			</div>
+	
+		</form>
+
+	</body>
+</html>

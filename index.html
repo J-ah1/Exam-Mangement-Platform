@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style.css">
+
+		<title>CS490 Project</title>
+		
+	</head>
+	<body>
+		
+		<script>
+		
+			//POSTING: Type, gather values & send values & receive JSON response
+			function SendLogin() {
+				var testUcid = document.getElementById("user").value;
+				var testPass = document.getElementById("pass").value;
+				var sendStr = "user=" + testUcid + "&pass=" + testPass;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!")
+						console.log(this.responseText);
+						switch (this.responseText){
+							case "instructor":
+								window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+								break;
+							case "student":
+								window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_start.html";
+								break;
+							case "invalid_user":
+								document.getElementById("words").innerHTML = "Invaid User. Please try again.";
+								break;
+							case "invalid_form":
+								document.getElementById("words").innerHTML = "Form not received. Please try again.";
+								break;
+							default:
+								console.log("Error: responseText value not accounted for.")
+								break;
+						}
+					}
+				}
+				xhttp.open("POST","frontalpha.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+			}
+		</script>
+		
+		
+		<form action="">
+			<div>
+				<label for="user">Username</label>
+				<!--
+					Remove Labels?
+					Remove Names
+					User error alert instead
+				-->
+				<input type="text" name="user" id="user" autocomplete="off" required pattern="[a-zA-Z]{2,3}[0-9]{1,4}">
+				<br><br>
+				<label for="pass">Password</label>
+				<input type="password" name="pass" id="pass" autocomplete="off" required>
+				<br><br>
+				<button type="button" id="submitButton" onclick="SendLogin()">Submit</button>
+				
+				<p id="words"></p>
+			</div>
+			
+			<div>
+			</div>
+			
+		</form>
+
+	</body>
+</html>

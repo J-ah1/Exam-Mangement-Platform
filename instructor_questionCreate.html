@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_instructor_questionCreate.css">
+		
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Instructor</title>
+		
+	</head>
+	<body>
+		<script>
+		
+			CheckLogin("instructor");
+			
+			function SendQuestion() {
+				var question_textVal = document.getElementById("question").value;
+				var difficultyVal = "easy";
+				for(e of document.getElementsByName("difficulty")){
+					if(e.checked == true){
+						difficultyVal = e.value;
+					}
+				}
+				
+				var topicVal = "dictionary";
+				for(e of document.getElementsByName("topic")){
+					if(e.checked == true){
+						topicVal = e.value;
+					}
+				}
+				
+				var requirementsVal = "";
+				for(e of document.getElementsByName("requirement")){
+					if(e.id == "needLoop" && e.checked == true){
+						var loopReq = "forLoop";
+						if(document.getElementById("needLoopWhile").checked == true){
+							loopReq = "whileLoop";
+						}
+						requirementsVal += loopReq + ","
+					}else if(e.checked == true){
+						requirementsVal += e.value + ","
+					}
+				}
+				if(requirementsVal.length > 0){
+					requirementsVal = requirementsVal.substring(0, requirementsVal.length -1);
+				}
+				
+				var outputVal = "none";
+				for(e of document.getElementsByName("needOutput")){
+					if(e.checked == true){
+						outputVal = e.value;
+					}
+				}
+				
+				// Arguments and Test_Cases
+				var argumentsVal = "";
+				var test_casesVal = "";
+				if(document.getElementById("needNumArgs").checked == true){
+					for(e of document.getElementsByName("argName")){
+						argumentsVal += e.value + ",";
+					}
+					if(argumentsVal.length > 0){
+						argumentsVal = argumentsVal.substring(0, argumentsVal.length -1);
+					}
+					
+					for(e of document.getElementsByName("testCase")){
+						for (eChild of e.childNodes){
+							console.log(eChild.nodeName);
+							if(eChild.nodeName == "INPUT"){
+								test_casesVal += eChild.value + "==";
+							}
+						}
+						if(test_casesVal.length > 0){
+							test_casesVal = test_casesVal.substring(0, test_casesVal.length -2);
+						}
+						test_casesVal += ":";
+					}
+					if(test_casesVal.length > 0){
+						test_casesVal = test_casesVal.substring(0, test_casesVal.length -1);
+					}
+				}				
+				
+				
+				var sendStr =
+					"question_text=" + question_textVal +
+					"&difficulty=" + difficultyVal + 
+					"&topic=" + topicVal +
+					"&requirements=" + requirementsVal +
+					"&output=" + outputVal +
+					"&arguments=" + argumentsVal +
+					"&test_cases=" + test_casesVal;
+				
+				console.log(sendStr);
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log(this.responseText);
+						console.log("Attempted to send!")
+						console.log("Redirected!");
+						//window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTQ.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+      }
+			
+			function mustCheckArgs (elem){
+				var numArgs = elem.selectedIndex+1;
+				var argTextBox = '<input name="argName" type="text"><br>';
+				document.getElementById("argNames").innerHTML = argTextBox.repeat(numArgs);
+				// Should change the number of text boxes for each test case?
+			}
+			
+			function test3(theCB){
+				var content = theCB.nextElementSibling.nextElementSibling;
+				if(content.style.display === "block" && !theCB.checked){
+					content.style.display = "none";
+				}else{
+					content.style.display = "block";
+				}
+			}
+			
+			window.onload = function(){
+				document.getElementById("backButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+				};
+			}
+			
+			
+		</script>
+		
+	
+		<form action="">
+		
+			<button type="button" id="backButton">Back to Start Page</button>
+			<br>
+		
+		
+			<!-- Questions to Question Bank-->
+			Question Creation Section
+			<div>
+				<!-- Question Creation -->
+				<div>
+					<label for="question">Enter Question:</label><br>
+					<textarea id="question" rows="16" cols="80" required></textarea>
+					<br><br>
+					
+					Difficulty<br>
+					<input type="radio" name="difficulty" id="difficultyEasy" value="easy" checked>Easy
+					<input type="radio" name="difficulty" id="difficultyMedium" value="medium">Medium
+					<input type="radio" name="difficulty" id="difficultyHard" value="hard">Hard<br>
+					<br>
+					Topics<br>
+					<input type="radio" name="topic" id="topicDict" value="dictionary" checked>Dictionaries<br>
+					<input type="radio" name="topic" id="topicArray" value="array">Arrays<br>
+					<input type="radio" name="topic" id="topicString" value="string">Strings<br>
+					<input type="radio" name="topic" id="topicCondition" value="condition">Conditionals<br>
+					<input type="radio" name="topic" id="topicTurtle" value="turtle">Turtle<br>
+					<input type="radio" name="topic" id="topicLoop" value="loop">Loops<br>
+					<br>
+					
+					
+					Requirements<br>
+					Must use...<br>
+					<input type="checkbox" name="requirement" id="needDict" value="dictionary">Dictionary<br>
+					<input type="checkbox" name="requirement" id="needArray" value="array">Array<br>
+					<input type="checkbox" name="requirement" id="needCondition" value="conditional">Conditional<br>
+					<input type="checkbox" name="requirement" id="needTurtle" value="turtle">Turtle<br>
+					<input type="checkbox" name="requirement" id="needLoop" value="needLoop" onclick="test3(this)">Loop<br>
+					<div class="content">
+						<br>
+						Loop must be...<br>
+						<input type="radio" name="reqLoop" id="needLoopFor" value="forLoop" checked>For
+						<input type="radio" name="reqLoop" id="needLoopWhile" value="whileLoop">While
+					</div>
+					<br>
+					Output must...<br>
+					<input type="radio" name="needOutput" id="needOutputReturn" value="return">Return
+					<input type="radio" name="needOutput" id="needOutputPrint" value="print">Print
+					<input type="radio" name="needOutput" id="needOutputNone" value="none" checked>No Output<br>
+					<br>
+					<input type="checkbox" name="needNumArgs" id="needNumArgs" value="needNumArgs">
+					Must have
+					<select onchange="mustCheckArgs(this)">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+
+					</select>
+					arguments<br>
+					<div id="argNames">
+						<input name="argName" type="text"><br>
+					</div>
+				</div>
+				
+				<br><br>
+
+				<!-- Test Case Creation -->
+				Note: Test case arguments and outputs must be comma seperated <br>
+				<div id="testCases">
+					<div>
+						Test Case 1<br>
+						<div name="testCase">
+							Arguments:<br>
+							<input name="testCaseArgs" type="text"><br>
+							Output:<br>
+							<input name="testCaseOutput" type="text"><br>
+						</div>
+						Test Case 2<br>
+						<div name="testCase">
+							Arguments:<br>
+							<input name="testCaseArgs" type="text"><br>
+							Output:<br>
+							<input name="testCaseOutput" type="text"><br>
+						</div>
+						Test Case 3<br>
+						<div name="testCase">
+							Arguments:<br>
+							<input name="testCaseArgs" type="text"><br>
+							Output:<br>
+							<input name="testCaseOutput" type="text"><br>
+						</div>
+					</div>
+				</div>
+					
+				<!-- Question Submit Button?-->
+				<div>
+					<button type="button" id="submitButton" onclick="SendQuestion()">Submit To Bank</button>
+				</div>
+			</div>
+
+			
+		</form>
+
+	</body>
+</html>

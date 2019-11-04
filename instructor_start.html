@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="description" content="CS490 Project">
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="language" content="english">
+
+		<link rel="stylesheet" href="style_instructor_start.css">
+
+		<script type="text/javascript" src="checkLogin.js"></script>
+
+		<title>CS490 Project - Instructor</title>
+		
+	</head>
+	<body>
+		<script>
+
+			CheckLogin("instructor");
+			
+			// Logout button
+			
+			window.onload = function(){
+				document.getElementById("questionCreateButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_questionCreate.html";
+				};
+				document.getElementById("examCreateButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examCreate.html";
+				};
+				document.getElementById("examGradeButton").onclick = function () {
+					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examGrade.html";
+				};
+			};
+		</script>
+		
+		<form>
+			<div>
+				<button type="button" id="questionCreateButton">Question Creation</button>
+				<br>
+				<button type="button" id="examCreateButton">Exam Creation</button>
+				<br>
+				<button type="button" id="examGradeButton">Exam Grading</button>
+				<br>
+			</div>
+		</form>
+
+	</body>
+</html>
