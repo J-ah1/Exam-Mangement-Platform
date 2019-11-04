@@ -32,7 +32,7 @@
 
 			$decoded_result = json_decode($result);
 			if($decoded_result->back == 0){
-			echo "invalid_user";
+				echo "invalid_user";
 			}else if($decoded_result->instructor == 1){
 				$_SESSION['userName'] = $_POST['user'];
 				$_SESSION['userType'] = 'instructor';

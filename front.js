@@ -20,7 +20,7 @@ function Logout(){
 	xhttp.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
 			console.log(this.responseText);
-			if(this.responseText){
+			if(!this.responseText){
 				window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/";
 			}
 		}
@@ -37,6 +37,8 @@ function SetupStartScreen(userType){
 	
 	if(userType == "instructor"){
 		
+		CheckLogin(userType);
+		
 		document.getElementById("questionCreateButton").onclick = function () {
 			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_questionCreate.html";
 		};
@@ -48,6 +50,8 @@ function SetupStartScreen(userType){
 		};
 		
 	}else if(userType  == "student"){
+		
+		CheckLogin(userType);
 		
 		document.getElementById("takeExamButton").onclick = function () {
 			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_takeExam.html";
