@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="language" content="english">
 
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="style_index.css">
 
 		<title>CS490 Project</title>
 		
@@ -36,10 +36,10 @@
 								window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_start.html";
 								break;
 							case "invalid_user":
-								document.getElementById("words").innerHTML = "Invaid User. Please try again.";
+								alert("Invaid User. Please try again.");
 								break;
 							case "invalid_form":
-								document.getElementById("words").innerHTML = "Form not received. Please try again.";
+								alert("Form not received. Please try again.");
 								break;
 							default:
 								console.log("Error: responseText value not accounted for.")
@@ -56,25 +56,19 @@
 		
 		<form action="">
 			<div>
+			
 				<label for="user">Username</label>
-				<!--
-					Remove Labels?
-					Remove Names
-					User error alert instead
-				-->
-				<input type="text" name="user" id="user" autocomplete="off" required pattern="[a-zA-Z]{2,3}[0-9]{1,4}">
+				<input type="text" id="user" autocomplete="off" required>
 				<br><br>
-				<label for="pass">Password</label>
-				<input type="password" name="pass" id="pass" autocomplete="off" required>
-				<br><br>
-				<button type="button" id="submitButton" onclick="SendLogin()">Submit</button>
 				
-				<p id="words"></p>
+				<label for="pass">Password</label>
+				<input type="password" id="pass" autocomplete="off" required>
+				<br><br>
+				
+				<button type="button" id="submitButton" onclick="SendLogin()">Submit</button>
+
 			</div>
-			
-			<div>
-			</div>
-			
+
 		</form>
 
 	</body>

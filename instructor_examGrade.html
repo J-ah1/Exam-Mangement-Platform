@@ -11,7 +11,7 @@
 
 		<link rel="stylesheet" href="style_instructor_examGrade.css">
 		
-		<script type="text/javascript" src="checkLogin.js"></script>
+		<script type="text/javascript" src="front.js"></script>
 
 		<title>CS490 Project - Instructor</title>
 		
@@ -21,13 +21,12 @@
 		
 			CheckLogin("instructor");
 		
-		
-			// POSTING: Type, send values & receive JSON response
 			function GetAllInstructorExams() {
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){
 						console.log("Attempted to send!");
+            console.log(this.responseText);
 						if(this.responseText == "userName not set"){
 							return;
 						}
@@ -60,8 +59,6 @@
 			
 			GetAllInstructorExams();
 
-
-			//POSTING: Type, checking if allowed
 			function GradeExam(examID, studentID) {
 				var sendStr = "examID=" + examID + "&studentID=" + studentID;
 				var xhttp = new XMLHttpRequest();
@@ -80,7 +77,7 @@
 				xhttp.send(sendStr);
       }
 			
-			//POSTING: Type, gather values & send values
+			
 			function FinalizeExam(examID) {
 				var sendStr = "examID=" + examID;
 				var xhttp = new XMLHttpRequest();

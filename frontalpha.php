@@ -6,7 +6,6 @@
 			
 			session_start();
 			
-			//$url = 'http://afsaccess4.njit.edu/~lta2/CS490/middlealpha.php';
 			$url = 'http://afsaccess4.njit.edu/~lta2/CS490/middlebeta.php';
 			
 			$fields = array(
@@ -26,7 +25,6 @@
 			curl_setopt($ch,CURLOPT_POST, count($fields));
 			curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
 			curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-			//curl_setopt($ch,CURLOPT_HTTPHEADER,array('Content-type:application/json'));
 
 			$result = curl_exec($ch);
 

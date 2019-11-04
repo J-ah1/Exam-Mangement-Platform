@@ -1,40 +1,63 @@
-function test() {
-	var testUcid = document.getElementById("user").value;
-	var testPass = document.getElementById("pass").value;
-	var sendStr = "user=" + testUcid + "&pass=" + testPass;
+function CheckLogin(userType) {
+	var sendStr = "reqUserType=" + userType;
 	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-			if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText);
-					//<!-- 1 is instructor; 0 is student; anything else is failure -->
-					//<!-- window.location.replace("http://www.w3schools.com"); -->
-					console.log("Attempted to send!")
-					document.getElementById("words").innerHTML = this.responseText;
+	xhttp.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			console.log("Checking if user can view page...");
+			console.log(this.responseText);
+			if(this.responseText != "allowed"){
+				window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/";
 			}
+		}
 	}
-	xhttp.open("POST","frontalpha.php",true);
+	xhttp.open("POST","checkLogin.php",true);
 	xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 	xhttp.send(sendStr);
 }
 
-/* window.onload = init;
-
-function init(){
-	var ucidInput = document.getElementById("user");
-	var passInput = document.getElementById("pass");
-
-	ucidInput.addEventListener("keyup", function(event) {
-		if (event.keyCode === 13) {
-			event.preventDefault();
-			document.getElementById("submitButton").click();
+function Logout(){
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			console.log(this.responseText);
+			if(this.responseText){
+				window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/";
+			}
 		}
-		
-	});
+	}
+	xhttp.open("POST","front.php",true);
+	xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	xhttp.send();
+}
+
+function SetupStartScreen(userType){
 	
-	passInput.addEventListener("keyup", function(event) {
-		if (event.keyCode === 13) {
-			event.preventDefault();
-			document.getElementById("submitButton").click();
-		}
-	});
-} */
+	var logoutButton = "<button type='button' id='logoutButton' onclick='Logout()'>Logout</button>";
+	document.body.innerHTML = logoutButton + "<br>" + document.body.innerHTML;
+	
+	if(userType == "instructor"){
+		
+		document.getElementById("questionCreateButton").onclick = function () {
+			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_questionCreate.html";
+		};
+		document.getElementById("examCreateButton").onclick = function () {
+			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examCreate.html";
+		};
+		document.getElementById("examGradeButton").onclick = function () {
+			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examGrade.html";
+		};
+		
+	}else if(userType  == "student"){
+		
+		document.getElementById("takeExamButton").onclick = function () {
+			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_takeExam.html";
+		};
+		document.getElementById("reviewExamButton").onclick = function () {
+			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_reviewExam.html";
+		};
+		
+	}else{
+		console.log("Error: undefined userType on start screen setup");
+	}
+}
+
