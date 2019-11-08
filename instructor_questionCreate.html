@@ -26,29 +26,12 @@
 			// Question Creation Scripts
 			function SendQuestion() {
 				var question_textVal = document.getElementById("question").value;
-				var difficultyVal = "easy";
-				for(e of document.getElementsByName("difficulty")){
-					if(e.checked == true){
-						difficultyVal = e.value;
-					}
-				}
-				
-				var topicVal = "dictionary";
-				for(e of document.getElementsByName("topic")){
-					if(e.checked == true){
-						topicVal = e.value;
-					}
-				}
+				var difficultyVal = document.getElementById("difficulty").value;
+				var topicVal = document.getElementById("topic").value;
 				
 				var requirementsVal = "";
 				for(e of document.getElementsByName("requirement")){
-					if(e.id == "needLoop" && e.checked == true){
-						var loopReq = "forLoop";
-						if(document.getElementById("needLoopWhile").checked == true){
-							loopReq = "whileLoop";
-						}
-						requirementsVal += loopReq + ","
-					}else if(e.checked == true){
+					if(e.checked == true){
 						requirementsVal += e.value + ","
 					}
 				}
@@ -56,12 +39,7 @@
 					requirementsVal = requirementsVal.substring(0, requirementsVal.length -1);
 				}
 				
-				var outputVal = "none";
-				for(e of document.getElementsByName("needOutput")){
-					if(e.checked == true){
-						outputVal = e.value;
-					}
-				}
+				var outputVal = document.getElementById("output").value;
 				
 				// Arguments and Test_Cases
 				var argumentsVal = "";
@@ -106,10 +84,10 @@
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){
 						console.log(this.responseText);
-						console.log("Attempted to send!")
-						console.log("Redirected!");
-						ResetAndAdd();
-						//window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+						console.log("Reset!");
+						document.getElementById("questionForm").reset();
+						// Likely a better way to add that one question to bank...
+						GetAllQuestions();
 					}
 				}
 				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTQ.php",true);
@@ -135,12 +113,6 @@
 				}else{
 					content.style.display = "block";
 				}
-			}
-			
-			// CLEAR AND ADD TO QUESTIONS
-			function ResetAndAdd(){
-				// First, clear the input on the questionCreate
-				GetAllQuestions();
 			}
 			
 			//
@@ -171,7 +143,7 @@
 							}
 							
 							console.log(questionArray);
-							document.getElementById("queriedQuestions").innerHTML += "\n";
+							document.getElementById("queriedQuestions").innerHTML += "<br>";
 							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID'></div>";
 							
 							document.getElementById("placeholderID").id = newQuestionID;
@@ -183,6 +155,7 @@
 							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+questionArray[5]+"<p>";
 							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+questionArray[6]+"<p>";
 							document.getElementById(newQuestionID).innerHTML += "Assign Point Value: <input id='questionPoints' type='text' required pattern='[0-9]{1,3}' onchange='UpdateTotal()'>";
+							document.getElementById(newQuestionID).innerHTML += "<br><br>";
 						}
 						
 						QueryQuestions(document.getElementById("questionSearchBox").value);
@@ -222,8 +195,10 @@
 						console.log("Attempted to send!")
 						console.log(this.responseText);
 						if(this.responseText != "invalid_form"){
-							console.log("Redirected!");
-							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+							console.log("Reset!");
+							document.getElementById("examForm").reset();
+							QueryQuestions("");
+							document.getElementById("totalPoints").innerHTML = 0;
 						}
 					}
 				}
@@ -267,151 +242,170 @@
 		</script>
 		
 	
-		<form action="">
+		<form id="questionForm" action="">
 		
-			<div class="split left">
-				<button type="button" id="backButton">Back to Start Page</button>
-				<br>
+			<button type="button" id="backButton">Back to Start Page</button>
 			
-				<!-- Question Creation -->
-				Question Creation Section
-				<div>
-					<label for="question">Enter Question:</label><br>
-					<textarea id="question" rows="16" cols="80" required></textarea>
-					<br><br>
-					
-					<!-- CHANGING SOON -->
-					Difficulty<br>
-					
-					<select name="difficulty2">
-						<option value="easy">Easy</option>
-						<option value="medium">Medium</option>
-						<option value="hard">Hard</option>
-					</select>
-					
-					<input type="radio" name="difficulty" id="difficultyEasy" value="easy" checked>Easy
-					<input type="radio" name="difficulty" id="difficultyMedium" value="medium">Medium
-					<input type="radio" name="difficulty" id="difficultyHard" value="hard">Hard<br>
+			<div class="split left">
+				<div class="centered">
+					<h1>Question Creation</h1>
 					<br>
-					
-					<!-- CHANGING SOON -->
-					Topics<br>
-					
-					
-					<select name="topic2">
-						<option value="dictionary">Dictionaries</option>
-						<option value="array">Arrays</option>
-						<option value="string">Strings</option>
-						<option value="condition">Conditionals</option>
-						<option value="turtle">Turtle</option>
-						<option value="loop">Loops</option>
-					</select>
-					
-					<input type="radio" name="topic" id="topicDict" value="dictionary" checked>Dictionaries<br>
-					<input type="radio" name="topic" id="topicArray" value="array">Arrays<br>
-					<input type="radio" name="topic" id="topicString" value="string">Strings<br>
-					<input type="radio" name="topic" id="topicCondition" value="condition">Conditionals<br>
-					<input type="radio" name="topic" id="topicTurtle" value="turtle">Turtle<br>
-					<input type="radio" name="topic" id="topicLoop" value="loop">Loops<br>
 					<br>
-					
-					
-					Requirements<br>
-					Must use...<br>
-					<input type="checkbox" name="requirement" id="needDict" value="dictionary">Dictionary<br>
-					<input type="checkbox" name="requirement" id="needArray" value="array">Array<br>
-					<input type="checkbox" name="requirement" id="needCondition" value="conditional">Conditional<br>
-					<input type="checkbox" name="requirement" id="needTurtle" value="turtle">Turtle<br>
-					
-					
-					
-					<!-- CHANGING SOON -->
-					<input type="checkbox" name="requirement" id="needLoop" value="needLoop" onclick="test3(this)">Loop<br>
-					<div class="content">
-						<br>
-						Loop must be...<br>
-						<input type="radio" name="reqLoop" id="needLoopFor" value="forLoop" checked>For
-						<input type="radio" name="reqLoop" id="needLoopWhile" value="whileLoop">While
-					</div>
-					<br>
-					Output must...<br>
-					<input type="radio" name="needOutput" id="needOutputReturn" value="return">Return
-					<input type="radio" name="needOutput" id="needOutputPrint" value="print">Print
-					<input type="radio" name="needOutput" id="needOutputNone" value="none" checked>No Output<br>
-					<br>
-					<input type="checkbox" name="needNumArgs" id="needNumArgs" value="needNumArgs">
-					Must have
-					<select onchange="mustCheckArgs(this)">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-
-					</select>
-					arguments<br>
-					<div id="argNames">
-						<input name="argName" type="text"><br>
-					</div>
-				</div>
 				
-				<br><br>
-
-				<!-- Test Case Creation -->
-				Note: Test case arguments and outputs must be comma seperated <br>
-				<div id="testCases">
+					<!-- Question Creation -->
 					<div>
-						Test Case 1<br>
-						<div name="testCase">
-							Arguments:<br>
-							<input name="testCaseArgs" type="text"><br>
-							Output:<br>
-							<input name="testCaseOutput" type="text"><br>
-						</div>
-						Test Case 2<br>
-						<div name="testCase">
-							Arguments:<br>
-							<input name="testCaseArgs" type="text"><br>
-							Output:<br>
-							<input name="testCaseOutput" type="text"><br>
-						</div>
-						Test Case 3<br>
-						<div name="testCase">
-							Arguments:<br>
-							<input name="testCaseArgs" type="text"><br>
-							Output:<br>
-							<input name="testCaseOutput" type="text"><br>
+						<label for="title">Question Title:</label>
+						<br>
+						<input type="text" id="title">
+						<br>
+						
+						<label for="question">Enter Question:</label>
+						<br>
+						<textarea id="question" rows="16" cols="80" required></textarea>
+						<br>
+						<br>
+
+						<label for="difficulty">Difficulty</label>
+						<br>
+						<select id="difficulty">
+							<option value="easy">Easy</option>
+							<option value="medium">Medium</option>
+							<option value="hard">Hard</option>
+						</select>
+						<br>
+						<br>
+						
+						<!-- CHANGING SOON -->
+						<label for="topic">Topics</label>
+						<br>
+						<select id="topic">
+							<option value="dictionary">Dictionaries</option>
+							<option value="array">Arrays</option>
+							<option value="string">Strings</option>
+							<option value="condition">Conditionals</option>
+							<option value="turtle">Turtle</option>
+							<option value="loop">Loops</option>
+						</select>
+						<br>
+						<br>
+						
+						
+						<label for="">Requirements</label>
+						<br>
+						
+						<input type="checkbox" name="requirement" id="reqDict" value="dictionary"><label for="reqDict">Dictionary</label>
+						<br>
+						<input type="checkbox" name="requirement" id="reqArr" value="array"><label for="reqArr">Array</label>
+						<br>
+						<input type="checkbox" name="requirement" id="reqCond" value="conditional"><label for="reqCond">Conditional</label>
+						<br>
+						<input type="checkbox" name="requirement" id="reqTurt" value="turtle"><label for="reqTurt">Turtle</label>
+						<br>
+						<input type="checkbox" name="requirement" id="reqFor" value="forLoop"><label for="reqFor">For Loop</label>
+						<br>
+						<input type="checkbox" name="requirement" id="reqWhile" value="whileLoop"><label for="reqWhile">While Loop</label>
+						<br>
+						<br>
+						
+						
+						<!-- CHANGING SOON -->
+						<label for="output">Output</label>
+						<br>
+						<select id="output">
+							<option value="return">Return</option>
+							<option value="print">Print</option>
+						</select>
+						<br>
+						<br>
+						
+						<input type="checkbox" name="needNumArgs" id="needNumArgs" value="needNumArgs">
+						Number of arguments
+						<select onchange="mustCheckArgs(this)">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+						</select>
+						
+						<br>
+						<label for="argNames">Argument Names</label>
+						<div id="argNames">
+							<input name="argName" type="text"><br>
 						</div>
 					</div>
-				</div>
 					
-				<div>
-					<button type="button" id="submitButton" onclick="SendQuestion()">Submit To Bank</button>
+					<br>
+					<br>
+
+					<!-- Test Case Creation -->
+					<!-- SHOULD BE VARIABLE (2-6)-->
+					<!-- Remove requirement to comma seperate through multiple boxes? -->
+					Note: Test case arguments and outputs must be comma seperated <br>
+					<div id="testCases">
+						<div>
+							Test Case 1<br>
+							<div name="testCase">
+								Arguments:<br>
+								<input name="testCaseArgs" type="text"><br>
+								Output:<br>
+								<input name="testCaseOutput" type="text"><br>
+							</div>
+							Test Case 2<br>
+							<div name="testCase">
+								Arguments:<br>
+								<input name="testCaseArgs" type="text"><br>
+								Output:<br>
+								<input name="testCaseOutput" type="text"><br>
+							</div>
+							Test Case 3<br>
+							<div name="testCase">
+								Arguments:<br>
+								<input name="testCaseArgs" type="text"><br>
+								Output:<br>
+								<input name="testCaseOutput" type="text"><br>
+							</div>
+						</div>
+					</div>
+						
+					<div>
+						<button type="button" id="submitButton" onclick="SendQuestion()">Submit To Bank</button>
+					</div>
 				</div>
 			</div>
 			
+		</form>
 			
+		<form id="examForm" action="">
+		
 			<!-- Exam Creation -->
 			<div class="split right">
-				Search question bank... 
-				<!-- using keywords ie. buttons / text input -->
-				<!-- add selected questions to a list -->
-				<br><br>
-				
-				All Questions...
-				<div id="queriedQuestions">
+				<div class="centered">
+					<h1>Exam Creation</h1>
+					<br>
+					<br>
+					
 					<div>
-						<input id="questionSearchBox" type="text" onchange="QueryQuestions(this.value)"><br>
+						<p>(exam being created goes here)<p>
+					</div>
+					Total Points
+					<p id="totalPoints">0</p>
+					<p id="words"></p>
+					<button type="button" onclick="SubmitExam()">Submit Exam</button>
+					<br>
+					
+					<label for="questionSearchBox">Search Question Bank</label>
 					<div>
+							<input id="questionSearchBox" type="text" onchange="QueryQuestions(this.value)"><br>
+					<div>
+					<div id="queriedQuestions">
+						
+					</div>
+					
+					
+			
 				</div>
-				
-				Total Points
-				<p id="totalPoints">0</p>
-				<p id="words"></p>
-				<button type="button" onclick="SubmitExam()">Submit Exam</button>
-			
-			
 			</div>
 
 			
