@@ -21,6 +21,9 @@
 		
 			CheckLogin("instructor");
 			
+			
+			
+			// Question Creation Scripts
 			function SendQuestion() {
 				var question_textVal = document.getElementById("question").value;
 				var difficultyVal = "easy";
@@ -105,13 +108,18 @@
 						console.log(this.responseText);
 						console.log("Attempted to send!")
 						console.log("Redirected!");
-						window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+						ResetAndAdd();
+						//window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
 					}
 				}
 				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTQ.php",true);
 				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				xhttp.send(sendStr);
       }
+			
+			
+			
+			
 			
 			function mustCheckArgs (elem){
 				var numArgs = elem.selectedIndex+1;
@@ -129,6 +137,126 @@
 				}
 			}
 			
+			// CLEAR AND ADD TO QUESTIONS
+			function ResetAndAdd(){
+				// First, clear the input on the questionCreate
+				GetAllQuestions();
+			}
+			
+			//
+			//
+			//
+			//
+			// Exam Creation Scripts
+			function GetAllQuestions(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log(this.responseText);
+						console.log("Attempted to send!");
+						if(this.responseText == "examData not set"){
+							return;
+						}
+						var questionBank = this.responseText.split("~");
+						questionBank.pop();
+						console.log(questionBank);
+						for(question of questionBank){
+							
+							console.log(question);
+							var questionArray = question.split("\n");
+							var newQuestionID = questionArray[0];
+							// There's probably a better way...
+							if(document.getElementById(newQuestionID)){
+								continue;
+							}
+							
+							console.log(questionArray);
+							document.getElementById("queriedQuestions").innerHTML += "\n";
+							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID'></div>";
+							
+							document.getElementById("placeholderID").id = newQuestionID;
+							document.getElementById(newQuestionID).innerHTML += "<input id='questionCheck' type='checkbox' onchange='UpdateTotal()'>";
+							document.getElementById(newQuestionID).innerHTML += "<p>"+questionArray[1]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Difficulty: "+questionArray[2]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Topic: "+questionArray[3]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Requirements: "+questionArray[4]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+questionArray[5]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+questionArray[6]+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "Assign Point Value: <input id='questionPoints' type='text' required pattern='[0-9]{1,3}' onchange='UpdateTotal()'>";
+						}
+						
+						QueryQuestions(document.getElementById("questionSearchBox").value);
+						
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTA.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
+			GetAllQuestions();
+			
+			function SubmitExam(){
+
+				var examData = ""
+				for(e of document.getElementsByName("question")){
+					console.log(e.childNodes);
+					if(e.childNodes[0].checked == true){
+						if(!Number.isInteger(parseInt(e.childNodes[14].value))){
+							document.getElementById("words").innerHTML = "All point values must be assigned correctly!";
+							return;
+						}
+						examData += e.id + "," + e.childNodes[14].value + ":";
+					}
+				}
+				if(examData.length > 0){
+					examData = examData.substring(0, examData.length -1);
+				}				
+				
+				//examData += "*" + document.getElementById("totalPoints").innerHTML;
+				var sendStr = "exam=" + examData;
+				console.log(sendStr);
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						console.log("Attempted to send!")
+						console.log(this.responseText);
+						if(this.responseText != "invalid_form"){
+							console.log("Redirected!");
+							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
+						}
+					}
+				}
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTE.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send(sendStr);
+			}
+			
+			function UpdateTotal(){
+				var newTotal = 0;
+				for(e of document.getElementsByName("question")){
+					if(e.childNodes[0].checked == true){
+						var pointValue = parseInt(e.childNodes[14].value);
+						if(Number.isInteger(pointValue)){
+							newTotal += pointValue;
+						}
+					}
+				}
+				document.getElementById("totalPoints").innerHTML = newTotal;
+			}
+			
+			function QueryQuestions(strToSearch){
+				console.log("Should update show/hide questions...");
+				for(e of document.getElementsByName("question")){
+					if(e.innerHTML.search(strToSearch) == -1){
+						e.style.display = "none"
+					}else{
+						e.style.display = "block";
+					}
+				}
+			}
+			
+			
 			window.onload = function(){
 				document.getElementById("backButton").onclick = function () {
 					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
@@ -141,25 +269,44 @@
 	
 		<form action="">
 		
-			<button type="button" id="backButton">Back to Start Page</button>
-			<br>
-		
-		
-			<!-- Questions to Question Bank-->
-			Question Creation Section
-			<div>
+			<div class="split left">
+				<button type="button" id="backButton">Back to Start Page</button>
+				<br>
+			
 				<!-- Question Creation -->
+				Question Creation Section
 				<div>
 					<label for="question">Enter Question:</label><br>
 					<textarea id="question" rows="16" cols="80" required></textarea>
 					<br><br>
 					
+					<!-- CHANGING SOON -->
 					Difficulty<br>
+					
+					<select name="difficulty2">
+						<option value="easy">Easy</option>
+						<option value="medium">Medium</option>
+						<option value="hard">Hard</option>
+					</select>
+					
 					<input type="radio" name="difficulty" id="difficultyEasy" value="easy" checked>Easy
 					<input type="radio" name="difficulty" id="difficultyMedium" value="medium">Medium
 					<input type="radio" name="difficulty" id="difficultyHard" value="hard">Hard<br>
 					<br>
+					
+					<!-- CHANGING SOON -->
 					Topics<br>
+					
+					
+					<select name="topic2">
+						<option value="dictionary">Dictionaries</option>
+						<option value="array">Arrays</option>
+						<option value="string">Strings</option>
+						<option value="condition">Conditionals</option>
+						<option value="turtle">Turtle</option>
+						<option value="loop">Loops</option>
+					</select>
+					
 					<input type="radio" name="topic" id="topicDict" value="dictionary" checked>Dictionaries<br>
 					<input type="radio" name="topic" id="topicArray" value="array">Arrays<br>
 					<input type="radio" name="topic" id="topicString" value="string">Strings<br>
@@ -175,6 +322,10 @@
 					<input type="checkbox" name="requirement" id="needArray" value="array">Array<br>
 					<input type="checkbox" name="requirement" id="needCondition" value="conditional">Conditional<br>
 					<input type="checkbox" name="requirement" id="needTurtle" value="turtle">Turtle<br>
+					
+					
+					
+					<!-- CHANGING SOON -->
 					<input type="checkbox" name="requirement" id="needLoop" value="needLoop" onclick="test3(this)">Loop<br>
 					<div class="content">
 						<br>
@@ -235,10 +386,32 @@
 					</div>
 				</div>
 					
-				<!-- Question Submit Button?-->
 				<div>
 					<button type="button" id="submitButton" onclick="SendQuestion()">Submit To Bank</button>
 				</div>
+			</div>
+			
+			
+			<!-- Exam Creation -->
+			<div class="split right">
+				Search question bank... 
+				<!-- using keywords ie. buttons / text input -->
+				<!-- add selected questions to a list -->
+				<br><br>
+				
+				All Questions...
+				<div id="queriedQuestions">
+					<div>
+						<input id="questionSearchBox" type="text" onchange="QueryQuestions(this.value)"><br>
+					<div>
+				</div>
+				
+				Total Points
+				<p id="totalPoints">0</p>
+				<p id="words"></p>
+				<button type="button" onclick="SubmitExam()">Submit Exam</button>
+			
+			
 			</div>
 
 			

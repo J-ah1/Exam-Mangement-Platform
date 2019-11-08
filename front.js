@@ -42,9 +42,6 @@ function SetupStartScreen(userType){
 		document.getElementById("questionCreateButton").onclick = function () {
 			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_questionCreate.html";
 		};
-		document.getElementById("examCreateButton").onclick = function () {
-			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examCreate.html";
-		};
 		document.getElementById("examGradeButton").onclick = function () {
 			window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examGrade.html";
 		};

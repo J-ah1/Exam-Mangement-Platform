@@ -60,7 +60,7 @@
 			
 				var pointsVal = "";
 				for(e of document.getElementsByClassName("points")){
-					if(!Number.isInteger(e.value)){
+					if(!Number.isInteger(parseInt(e.value))){
 						document.getElementById("words").innerHTML = "All point values must be assigned correctly!";
 						return;
 					}

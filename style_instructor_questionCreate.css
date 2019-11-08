@@ -9,3 +9,22 @@ textarea {
 	resize: none;
 	
 }
+
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: auto;
+}
+
+.left {
+  left: 0;
+  background-color: rgba(255, 246, 207, 0.3);
+}
+
+.right {
+  right: 0;
+  background-color: rgba(170, 250, 213, 0.3);
+}
