@@ -35,12 +35,13 @@
 						
 						var jList = JSON.parse(this.responseText);
 						for(jObj of jList){
-							document.getElementById("questionsToGrade").innerHTML += "<div class='question id='"+ jObj.question_id + "'></div>";
+							console.log(jObj.question_id);
+							document.getElementById("questionsToReview").innerHTML += "<div class='question' id='"+jObj.question_id+"'></div>";
 							document.getElementById(jObj.question_id).innerHTML += "<p>Question: " + jObj.question_text + "</p>";
 							document.getElementById(jObj.question_id).innerHTML += "<p>Response: " + jObj.response + "</p>";
 							document.getElementById(jObj.question_id).innerHTML += "<p>Score: " + jObj.points + " out of " + jObj.total + " </p>" ;
 							document.getElementById(jObj.question_id).innerHTML += "<p>Comment: " + jObj.comment + "</textarea>";
-							document.getElementById("totalPoints").innerHTML = parseInt(document.getElementById("totalPoints").innerHTML) + parseInt(jObj.points);
+							document.getElementById("totalStudentPoints").innerHTML = parseInt(document.getElementById("totalStudentPoints").innerHTML) + parseInt(jObj.points);
 							document.getElementById("totalTotals").innerHTML = parseInt(document.getElementById("totalTotals").innerHTML) + parseInt(jObj.total);
 						}
 						
@@ -52,10 +53,13 @@
 				xhttp.send();
       }
 			
-			SetupReview();
+			
 
 
 			window.onload = function(){
+			
+				SetupReview();
+			
 				document.getElementById("backButton").onclick = function () {
 					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_reviewExam.html";
 				};
@@ -78,7 +82,7 @@
 			</div>
 			
 			Student Total Points
-			<p id="totalPoints">0</p>
+			<p id="totalStudentPoints">0</p>
 			Total Possible Points
 			<p id="totalTotals">0</p>
 	

@@ -42,14 +42,16 @@
 						
 					}
 				}
-				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSReview.php",true);
+				//  CHANGE TO THIS INSTEAD AFTER FIX AND DELTE THE getAllReviewExams.php file
+				//xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/MBSReview.php",true);
+				xhttp.open("POST","http://afsaccess4.njit.edu/~jaa75/cs490/getAllReviewExams.php",true);
 				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				xhttp.send();
       }
 			
 			
 			
-			GetAllReviewExams();
+			
 
 			function ReviewExam(examID) {
 				var sendStr = "examID=" + examID;
@@ -58,7 +60,7 @@
 					if(this.readyState == 4 && this.status == 200){
 						console.log("Attempted to send!")
 						if(this.responseText == "allow"){
-							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_actuallyReviewExam.html";
+							window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_actuallyReviewExam.html";
 						}else{
 							console.log(this.responseText);
 						}
@@ -81,6 +83,9 @@
 			
 			
 			window.onload = function(){
+			
+				GetAllReviewExams();
+			
 				document.getElementById("backButton").onclick = function () {
 					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_start.html";
 				};

@@ -32,7 +32,7 @@ function Logout(){
 
 function SetupStartScreen(userType){
 	
-	var logoutButton = "<button type='button' id='logoutButton' onclick='Logout()'>Logout</button>";
+	var logoutButton = "<button type='button' id='logoutButton' onclick='Logout()' style='background-color:red; color:white; border:none; padding: 12px 18px; font-size: 22px; margin: 12px;'>Logout</button>";
 	document.body.innerHTML = logoutButton + "<br>" + document.body.innerHTML;
 	
 	if(userType == "instructor"){
