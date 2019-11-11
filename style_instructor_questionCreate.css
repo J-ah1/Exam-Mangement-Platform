@@ -5,11 +5,87 @@
 }
 
 textarea {
-	
 	resize: none;
-	
 }
 
+h1 {
+	font-size: 30px;
+	text-decoration: underline;
+}
+
+h3 {
+	font-size: 26px;
+	font-weight: bold;
+	display: inline;
+}
+
+p {
+	/* display: inline; */
+	font-size: 24px;
+}
+
+label {
+	/* display: inline; */
+	font-size: 20px;
+}
+
+input[type="text"]{
+	height: 28px;
+	width: 200px;
+}
+
+table{
+	border: 1px solid black;
+}
+
+td > input[type="text"]{
+	height: 28px;
+	width: 80%;
+	font-size: 24px;
+}
+
+td{
+	width: 10%;
+	font-size: 16px;
+	font-weight: normal;
+	border: 1px solid black;
+}
+
+th{
+	width: 10%;
+	font-size: 20px;
+	font-weight: bold;
+	border: 1px solid black;
+}
+
+
+select{
+	font-size: 20px;
+}
+
+#submitQuestionButton{
+	background-color: rgba(52, 235, 88, 1);
+	border: none;
+	padding: 24px 32px;
+	font-size: 24px;
+	margin: 24px;
+}
+
+#submitExamButton{
+	background-color: rgba(52, 235, 88, 1);
+	border: none;
+	padding: 24px 32px;
+	font-size: 24px;
+	margin: 24px;
+}
+
+#addToExam{
+	background-color: rgba(52, 235, 88, 1);
+	border: none;
+	padding: 24px 32px;
+	font-size: 24px;
+	margin: 24px;
+}
 
 .split {
   height: 100%;

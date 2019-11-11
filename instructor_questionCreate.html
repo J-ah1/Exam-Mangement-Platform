@@ -25,6 +25,7 @@
 			
 			// Question Creation Scripts
 			function SendQuestion() {
+				var question_titleVal = document.getElementById("title").value;
 				var question_textVal = document.getElementById("question").value;
 				var difficultyVal = document.getElementById("difficulty").value;
 				var topicVal = document.getElementById("topic").value;
@@ -44,34 +45,33 @@
 				// Arguments and Test_Cases
 				var argumentsVal = "";
 				var test_casesVal = "";
-				if(document.getElementById("needNumArgs").checked == true){
-					for(e of document.getElementsByName("argName")){
-						argumentsVal += e.value + ",";
-					}
-					if(argumentsVal.length > 0){
-						argumentsVal = argumentsVal.substring(0, argumentsVal.length -1);
-					}
-					
-					for(e of document.getElementsByName("testCase")){
-						for (eChild of e.childNodes){
-							console.log(eChild.nodeName);
-							if(eChild.nodeName == "INPUT"){
-								test_casesVal += eChild.value + "==";
-							}
+				for(e of document.getElementsByName("argName")){
+					argumentsVal += e.value + ",";
+				}
+				if(argumentsVal.length > 0){
+					argumentsVal = argumentsVal.substring(0, argumentsVal.length -1);
+				}
+				
+				for(e of document.getElementsByName("testCase")){
+					for (eChild of e.childNodes){
+						console.log(eChild.nodeName);
+						if(eChild.nodeName == "INPUT"){
+							test_casesVal += eChild.value + "==";
 						}
-						if(test_casesVal.length > 0){
-							test_casesVal = test_casesVal.substring(0, test_casesVal.length -2);
-						}
-						test_casesVal += ":";
 					}
 					if(test_casesVal.length > 0){
-						test_casesVal = test_casesVal.substring(0, test_casesVal.length -1);
+						test_casesVal = test_casesVal.substring(0, test_casesVal.length -2);
 					}
-				}				
+					test_casesVal += ":";
+				}
+				if(test_casesVal.length > 0){
+					test_casesVal = test_casesVal.substring(0, test_casesVal.length -1);
+				}		
 				
 				
 				var sendStr =
-					"question_text=" + question_textVal +
+					"question_title=" + question_titleVal + 
+					"&question_text=" + question_textVal +
 					"&difficulty=" + difficultyVal + 
 					"&topic=" + topicVal +
 					"&requirements=" + requirementsVal +
@@ -106,15 +106,16 @@
 				// Should change the number of text boxes for each test case?
 			}
 			
-			function test3(theCB){
-				var content = theCB.nextElementSibling.nextElementSibling;
-				if(content.style.display === "block" && !theCB.checked){
-					content.style.display = "none";
-				}else{
-					content.style.display = "block";
+			function updateTestCases(){
+				var numArgs = document.getElementById("numOfArgs").value;
+				var numTestCases = document.getElementById("numOfTestCases").value;
+				document.getElementById("testCases").innerHTML = "";
+				for(let x = 1; x <= numTestCases; x++){
+					var htmlToAdd = "<h3>Test Case " + x.toString() + "</h3><div name='testCase'><p>Arguments:</p><input name='testCaseArgs' type='text'><br><p>Output:</p><input name='testCaseOuput' type='text'><br></div>"
+					document.getElementById("testCases").innerHTML += htmlToAdd;
 				}
 			}
-			
+
 			//
 			//
 			//
@@ -142,20 +143,29 @@
 								continue;
 							}
 							
+							// Replace this when made into JSON
+							var questionTextVal = questionArray[1];
+							var questionDifficultyVal = questionArray[2];
+							var questionTopicVal = questionArray[3];
+							var questionRequirementsVal = questionArray[4];
+							var questionArgumentsVal = questionArray[5];
+							var questionOutputVal = questionArray[6];
+							
 							console.log(questionArray);
 							document.getElementById("queriedQuestions").innerHTML += "<br>";
 							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID'></div>";
 							
 							document.getElementById("placeholderID").id = newQuestionID;
+							document.getElementById(newQuestionID).innerHTML += "<button type='button' id='addToExam' onclick=''>Add to Exam</button>";
 							document.getElementById(newQuestionID).innerHTML += "<input id='questionCheck' type='checkbox' onchange='UpdateTotal()'>";
-							document.getElementById(newQuestionID).innerHTML += "<p>"+questionArray[1]+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Difficulty: "+questionArray[2]+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Topic: "+questionArray[3]+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Requirements: "+questionArray[4]+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+questionArray[5]+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+questionArray[6]+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "Assign Point Value: <input id='questionPoints' type='text' required pattern='[0-9]{1,3}' onchange='UpdateTotal()'>";
-							document.getElementById(newQuestionID).innerHTML += "<br><br>";
+							document.getElementById(newQuestionID).innerHTML += "<h3>"+"(question title goes here)"+"</h3>";
+							document.getElementById(newQuestionID).innerHTML += "<p>"+questionTextVal+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Difficulty: "+questionDifficultyVal+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Topic: "+questionTopicVal+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Requirements: "+questionRequirementsVal+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+questionArgumentsVal+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+questionOutputVal+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "Assign Point Value: <input id='questionPoints' type='text' required pattern='[0-9]{1,3}' onchange='UpdateTotal()'><br>- - -<br>";
 						}
 						
 						QueryQuestions(document.getElementById("questionSearchBox").value);
@@ -172,11 +182,14 @@
 			function SubmitExam(){
 
 				var examData = ""
+				
+				// SHOULD INSTEAD
+				// Go through all questions in exam table
 				for(e of document.getElementsByName("question")){
 					console.log(e.childNodes);
 					if(e.childNodes[0].checked == true){
 						if(!Number.isInteger(parseInt(e.childNodes[14].value))){
-							document.getElementById("words").innerHTML = "All point values must be assigned correctly!";
+							alert("All point values must be assigned correctly!");
 							return;
 						}
 						examData += e.id + "," + e.childNodes[14].value + ":";
@@ -207,6 +220,9 @@
 				xhttp.send(sendStr);
 			}
 			
+			
+			
+			
 			function UpdateTotal(){
 				var newTotal = 0;
 				for(e of document.getElementsByName("question")){
@@ -231,6 +247,11 @@
 				}
 			}
 			
+			function RemoveQuestion(idx){
+				console.log(idx);
+				document.getElementById("examTable").deleteRow(idx);
+			}
+			
 			
 			window.onload = function(){
 				document.getElementById("backButton").onclick = function () {
@@ -250,23 +271,21 @@
 				<div class="centered">
 					<h1>Question Creation</h1>
 					<br>
-					<br>
 				
 					<!-- Question Creation -->
 					<div>
-						<label for="title">Question Title:</label>
+						<h3>Question Title</h3>
 						<br>
 						<input type="text" id="title">
 						<br>
 						
-						<label for="question">Enter Question:</label>
+						<h3>Enter Question:</h3>
 						<br>
 						<textarea id="question" rows="16" cols="80" required></textarea>
 						<br>
 						<br>
 
-						<label for="difficulty">Difficulty</label>
-						<br>
+						<h3>Difficulty: </h3>
 						<select id="difficulty">
 							<option value="easy">Easy</option>
 							<option value="medium">Medium</option>
@@ -276,8 +295,7 @@
 						<br>
 						
 						<!-- CHANGING SOON -->
-						<label for="topic">Topics</label>
-						<br>
+						<h3>Topic: </h3>
 						<select id="topic">
 							<option value="dictionary">Dictionaries</option>
 							<option value="array">Arrays</option>
@@ -290,7 +308,7 @@
 						<br>
 						
 						
-						<label for="">Requirements</label>
+						<h3>Requirements</h3>
 						<br>
 						
 						<input type="checkbox" name="requirement" id="reqDict" value="dictionary"><label for="reqDict">Dictionary</label>
@@ -309,8 +327,7 @@
 						
 						
 						<!-- CHANGING SOON -->
-						<label for="output">Output</label>
-						<br>
+						<h3>Output Type: </h3>
 						<select id="output">
 							<option value="return">Return</option>
 							<option value="print">Print</option>
@@ -318,9 +335,8 @@
 						<br>
 						<br>
 						
-						<input type="checkbox" name="needNumArgs" id="needNumArgs" value="needNumArgs">
-						Number of arguments
-						<select onchange="mustCheckArgs(this)">
+						<h3>Number of arguments: </h3>
+						<select id="numOfArgs" onchange="mustCheckArgs(this)">
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="3">3</option>
@@ -330,7 +346,7 @@
 						</select>
 						
 						<br>
-						<label for="argNames">Argument Names</label>
+						<h3>Argument Names</h3>
 						<div id="argNames">
 							<input name="argName" type="text"><br>
 						</div>
@@ -342,35 +358,39 @@
 					<!-- Test Case Creation -->
 					<!-- SHOULD BE VARIABLE (2-6)-->
 					<!-- Remove requirement to comma seperate through multiple boxes? -->
-					Note: Test case arguments and outputs must be comma seperated <br>
+					
+					<h3>Number of test cases:</h3>
+					<select id="numOfTestCases" onchange="updateTestCases()">
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+					</select>
+					
+					
+					<p>Note: Test case arguments and outputs must be comma seperated</p>
 					<div id="testCases">
-						<div>
-							Test Case 1<br>
-							<div name="testCase">
-								Arguments:<br>
-								<input name="testCaseArgs" type="text"><br>
-								Output:<br>
-								<input name="testCaseOutput" type="text"><br>
-							</div>
-							Test Case 2<br>
-							<div name="testCase">
-								Arguments:<br>
-								<input name="testCaseArgs" type="text"><br>
-								Output:<br>
-								<input name="testCaseOutput" type="text"><br>
-							</div>
-							Test Case 3<br>
-							<div name="testCase">
-								Arguments:<br>
-								<input name="testCaseArgs" type="text"><br>
-								Output:<br>
-								<input name="testCaseOutput" type="text"><br>
-							</div>
+						<h3>Test Case 1</h3>
+						<div name='testCase'>
+							<p>Arguments:</p><input name='testCaseArgs' type='text'>
+							<br>
+							<p>Output:</p><input name='testCaseOuput' type='text'>
+							<br>
+						</div>
+						<h3>Test Case 2</h3>
+						<div name='testCase'>
+							<p>Arguments:</p><input name='testCaseArgs' type='text'>
+							<br>
+							<p>Output:</p><input name='testCaseOuput' type='text'>
+							<br>
 						</div>
 					</div>
 						
+					<br>
+						
 					<div>
-						<button type="button" id="submitButton" onclick="SendQuestion()">Submit To Bank</button>
+						<button type="button" id="submitQuestionButton" onclick="SendQuestion()">Submit To Bank</button>
 					</div>
 				</div>
 			</div>
@@ -384,15 +404,38 @@
 				<div class="centered">
 					<h1>Exam Creation</h1>
 					<br>
-					<br>
 					
-					<div>
-						<p>(exam being created goes here)<p>
+					<div id="examBeingCreated">
+						
+						<table id="examTable">
+							<tr>
+								<th>Title</th>
+								<th>Difficulty</th>
+								<th>Topic</th>
+								<th style='width:50%;'>Text</th>
+								<th>Points</th>
+								<th></th>
+							</tr>
+							<tr name='NEW_QUESTION_POINT_VAR_NAME' id='QUESTION_ID_GOES_HERE'>
+								<td>Ex Title</td>
+								<td>Easy</td>
+								<td>Topic</td>
+								<td style='width:50%;'>lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</td>
+								<td><input type='text' maxlength="3"></td>
+								<td><button type='button' onclick='RemoveQuestion(this.parentNode.parentNode.rowIndex)'>Remove Question</button></td>
+							</tr>
+						</table>
+						
+						
+						<br>
+						
+						<p style="display:inline;">Total Points: </p>
+						<p style="display:inline;" id="totalPoints">0</p>
+						<br>
+						
+						<button type="button" id="submitExamButton"onclick="SubmitExam()">Submit Exam</button>
 					</div>
-					Total Points
-					<p id="totalPoints">0</p>
-					<p id="words"></p>
-					<button type="button" onclick="SubmitExam()">Submit Exam</button>
+					
 					<br>
 					
 					<label for="questionSearchBox">Search Question Bank</label>
