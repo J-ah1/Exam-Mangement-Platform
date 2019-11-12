@@ -4,5 +4,9 @@ form {
 	text-align: center;
 	width: 400px;
 	margin: auto;
-	margin-top: 30vh;
+	margin-top: 15vh;
+}
+
+button {
+	font-size: 20px;
 }

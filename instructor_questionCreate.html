@@ -25,7 +25,7 @@
 			
 			// Question Creation Scripts
 			function SendQuestion() {
-				var question_titleVal = document.getElementById("title").value;
+				var question_titleVal = document.getElementById("questionTitle").value;
 				var question_textVal = document.getElementById("question").value;
 				var difficultyVal = document.getElementById("difficulty").value;
 				var topicVal = document.getElementById("topic").value;
@@ -90,7 +90,9 @@
 						GetAllQuestions();
 					}
 				}
+				
 				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTQ.php",true);
+				
 				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				xhttp.send(sendStr);
       }
@@ -143,28 +145,25 @@
 								continue;
 							}
 
-							document.getElementById("queriedQuestions").innerHTML += "<br>";
-							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID'></div>";
+							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID'><br></div>";
 							
 							document.getElementById("placeholderID").id = newQuestionID;
 							
 							document.getElementById(newQuestionID).innerHTML += "<button type='button' id='addToExam' onclick='AddToExam("+JSON.stringify(question)+")'>Add to Exam</button>";
 							document.getElementById(newQuestionID).innerHTML += "<h3>"+question.question_title+"</h3>";
-							document.getElementById(newQuestionID).innerHTML += "<p>"+question.question_text+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Difficulty: "+question.difficulty+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Topic: "+question.topic+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p id='question_text'>"+question.question_text+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p id='question_difficulty'>Difficulty: "+question.difficulty+"<p>";
+							document.getElementById(newQuestionID).innerHTML += "<p id='question_topic'>Topic: "+question.topic+"<p>";
 							document.getElementById(newQuestionID).innerHTML += "<p>Requirements: "+question.requirements+"<p>";
 							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+question.arguments+"<p>";
 							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+question.output+"<p>";
 						}
 						
-						QueryQuestions(document.getElementById("questionSearchBox").value);
+						QueryQuestions();
 						
 					}
 				}
-				// CHANGE BACK TO THIS AFTER AND DELETE THE PHP
-				//xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTA.php",true);
-				xhttp.open("POST","http://afsaccess4.njit.edu/~jaa75/cs490/getAllQuestions.php",true);
+				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTA.php",true);
 				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				xhttp.send();
       }
@@ -200,7 +199,7 @@
 						if(this.responseText != "invalid_form"){
 							console.log("Reset!");
 							document.getElementById("examForm").reset();
-							QueryQuestions("");
+							QueryQuestions();
 							document.getElementById("totalPoints").innerHTML = 0;
 						}
 					}
@@ -226,13 +225,25 @@
 				document.getElementById("totalPoints").innerHTML = newTotal;
 			}
 			
-			function QueryQuestions(strToSearch){
+			function QueryQuestions(){
+				var strToSearch = document.getElementById("questionSearchBox").value;
+				var diffFilter = document.getElementById("difficultyFilterBox").value;
+				var topicFilter = document.getElementById("topicFilterBox").value;
+				
 				console.log("Should update show/hide questions...");
 				for(e of document.getElementsByName("question")){
-					if(e.innerHTML.search(strToSearch) == -1){
-						e.style.display = "none"
-					}else{
-						e.style.display = "block";
+					e.style.display = "block";
+					for(c of e.childNodes){
+						if(c.id == 'question_text' && c.innerHTML.search(strToSearch) == -1){
+							e.style.display = "none";
+							break;
+						}else if(c.id == 'question_difficulty' && diffFilter != "" && c.innerHTML !=  "Difficulty: "+ diffFilter){
+							e.style.display = "none";
+							break;
+						}else if(c.id == 'question_topic' && topicFilter != "" && c.innerHTML !=  "Topic: "+ topicFilter){
+							e.style.display = "none";
+							break;
+						}
 					}
 				}
 			}
@@ -265,6 +276,17 @@
 				document.getElementById("backButton").onclick = function () {
 					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_start.html";
 				};
+				
+				
+				document.getElementById('questionSearchBox').onkeypress = function(e){
+					if (!e) e = window.event;
+					var keyCode = e.keyCode || e.which;
+					if (keyCode == '13'){
+						event.preventDefault();
+						QueryQuestions();
+					}
+				}
+				
 			}
 			
 			
@@ -284,7 +306,7 @@
 					<div>
 						<h3>Question Title</h3>
 						<br>
-						<input type="text" id="title">
+						<input type="text" id="questionTitle">
 						<br>
 						
 						<h3>Enter Question:</h3>
@@ -402,6 +424,10 @@
 					<h1>Exam Creation</h1>
 					<br>
 					
+					<h3>Exam Title</h3>
+					<br>
+					<input type="text" id="examTitle">
+					<br>
 					<div id="examBeingCreated">
 						
 						<table id="examTable">
@@ -425,10 +451,26 @@
 					</div>
 					
 					<br>
+					<br>
 					
-					<label for="questionSearchBox">Search Question Bank</label>
+					<h3>Search Question Bank</h3>
 					<div>
-							<input id="questionSearchBox" type="text" onchange="QueryQuestions(this.value)"><br>
+							<input id="questionSearchBox" type="text" onchange="QueryQuestions()">
+							<br>
+							<h3>Filter Difficulty: </h3>
+							<select id="difficultyFilterBox" onchange="QueryQuestions()">
+								<option value="">None</option>
+								<option value="easy">Easy</option>
+								<option value="medium">Medium</option>
+								<option value="hard">Hard</option>
+							</select>
+							<h3>Filter Topic: </h3>
+							<select id="topicFilterBox" onchange="QueryQuestions()">
+								<option value="">None</option>
+								<option value="math">Math</option>
+								<option value="array">Arrays</option>
+								<option value="string">Strings</option>
+							</select>
 					<div>
 					<div id="queriedQuestions">
 						

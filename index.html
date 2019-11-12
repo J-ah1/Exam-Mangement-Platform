@@ -36,7 +36,8 @@
 								window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_start.html";
 								break;
 							case "invalid_user":
-								alert("Invaid User. Please try again.");
+								alert("Invaid User/Pass. Please try again.");
+								document.getElementById("loginForm").reset();
 								break;
 							case "invalid_form":
 								alert("Form not received. Please try again.");
@@ -51,10 +52,33 @@
 				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				xhttp.send(sendStr);
 			}
+			
+			
+			window.onload = function(){
+			
+				document.getElementById('pass').onkeypress = function(e){
+					if (!e) e = window.event;
+					var keyCode = e.keyCode || e.which;
+					if (keyCode == '13'){
+						SendLogin();
+					}
+				}
+				
+				document.getElementById('user').onkeypress = function(e){
+					if (!e) e = window.event;
+					var keyCode = e.keyCode || e.which;
+					if (keyCode == '13'){
+						document.getElementById("pass").focus();
+					}
+				}
+				
+				
+			}
+			
 		</script>
 		
 		
-		<form action="">
+		<form id="loginForm" action="">
 			<div>
 			
 				<h1>CS490 Project</h1>
