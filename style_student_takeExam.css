@@ -1,0 +1,42 @@
+body {
+	background-color: rgba(196, 253, 255, 0.3);
+}
+
+h1 {
+	margin: 0px;
+	padding-top: 5vh;
+	text-decoration: underline;
+	font-size: 48px;
+}
+
+
+h2 {
+	font-size: 36px;
+	margin-bottom: 2px;
+}
+
+
+h3 {
+	margin-top: 0px;
+	margin-bottom: 8px;
+	font-size: 22px;
+}
+
+
+button{
+	font-size: 24px;
+	background-color: rgba(170, 220, 235, 1);
+	border: 2px solid black;
+}
+
+#backButton{
+	position: fixed;
+	background-color:red;
+	color:white;
+	border: 2px solid white;
+	border-radius: 48px;
+	padding: 6px 18px;
+	font-size: 48px;
+	font-weight: bold;
+	margin: 12px;
+}

@@ -13,7 +13,7 @@
 		
 		<script type="text/javascript" src="front.js"></script>
 
-		<title>CS490 Project - Instructor</title>
+		<title>Instructor Exam Grading Page</title>
 		
 	</head>
 	<body>
@@ -34,17 +34,17 @@
 						for(jObj of jList){
 							if(document.getElementById(jObj.exam_id) == null){
 								document.getElementById("examsToGrade").innerHTML += "<div class='exam' id='" + jObj.exam_id + "'></div>";
+								document.getElementById(jObj.exam_id).innerHTML += "<h3>" + jObj.exam_title + "</h3><br>";
 							}
+							
 							var examStudID = jObj.exam_id + "_" + jObj.student;
 							document.getElementById(jObj.exam_id).innerHTML += "<div class='exam_stud' id='" + examStudID + "'></div>";
-							document.getElementById(examStudID).innerHTML += "<p>ExamID: " + jObj.exam_id + "</p>";
-							document.getElementById(examStudID).innerHTML += "<p>StudentID: </p>" + jObj.student + "</p>";
-							document.getElementById(examStudID).innerHTML += "<p>Points: " + jObj.points + "</p>";
-							document.getElementById(examStudID).innerHTML += "<p>Total: </p>" + jObj.total + "</p>";
+							document.getElementById(examStudID).innerHTML += "<p style='font-size: 28px;'>Student: " + jObj.student + "</p>";
+							document.getElementById(examStudID).innerHTML += "<p>Score: " + jObj.points + "/" + jObj.total +"</p>";
 							document.getElementById(examStudID).innerHTML += "<button type='button' onclick='GradeExam(" + jObj.exam_id + ",\"" + jObj.student + "\")'>Grade Student Exam</button>\n";
 						}
 						for(e of document.getElementsByClassName("exam")){
-							e.innerHTML += "<button type='button' onclick='FinalizeExam(" + e.id + ")'>Finalize Exam Grades</button>";
+							e.innerHTML += "<br><button type='button' class='finalizeButton' onclick='FinalizeExam(" + e.id + ")'>Finalize Exam Grades</button>";
 						}
 						
 						
@@ -106,10 +106,14 @@
 	
 		<form action="">
 		
-			<button type="button" id="backButton">Back to Start Page</button>
+			<button type="button" id="backButton"><</button>
 
-			<div id="examsToGrade">
-				
+			<div style="text-align: center;">
+				<h1>Exams To Grade</h1>
+
+				<div id="examsToGrade">
+					
+				</div>
 			</div>
 	
 		</form>

@@ -33,6 +33,7 @@
 						var jList = JSON.parse(this.responseText);
 						for(jObj of jList){
 							document.getElementById("examsToReview").innerHTML += "<div class='exam' id='" + jObj.exam_id + "'></div>"
+							document.getElementById(jObj.exam_id).innerHTML += "<p>Exam Title: " + jObj.exam_title + "</p>";
 							document.getElementById(jObj.exam_id).innerHTML += "<p>ExamID: " + jObj.exam_id + "</p>";
 							document.getElementById(jObj.exam_id).innerHTML += "<p>InstructorID: </p>" + jObj.instructor + "</p>";
 							document.getElementById(jObj.exam_id).innerHTML += "<p>Points: " + jObj.points + "</p>";
@@ -94,7 +95,7 @@
 	
 		<form action="">
 		
-			<button type="button" id="backButton">Back to Start Page</button>
+			<button type="button" id="backButton"><</button>
 
 			<div id="examsToReview">
 				

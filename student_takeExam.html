@@ -13,7 +13,7 @@
 		
 		<script type="text/javascript" src="front.js"></script>
 
-		<title>CS490 Project - Student</title>
+		<title>Student Take Exam Page</title>
 		
 	</head>
 	<body>
@@ -30,18 +30,20 @@
 						if(this.responseText == "userName not set"){
 							return;
 						}
-						var examBank = this.responseText.split("~");
+						var examBank = this.responseText.split("</br></br>");
 						examBank.pop();
 						console.log(examBank);
 						for(exam of examBank){
+							exam = JSON.parse(exam);
 							console.log(exam);
-							var examArray = exam.split("\n");
-							console.log(examArray);
-							document.getElementById("examsToTake").innerHTML += "\n";
+							document.getElementById("examsToTake").innerHTML += "<br>";
 							document.getElementById("examsToTake").innerHTML += "<div class='exam' id='placeholderID'></div>";
-							var newExamID = examArray[0];
+							var newExamID = exam.exam_id;
+							var examTitle = "";
+							examTitle = exam.exam_title;
 							document.getElementById("placeholderID").id = newExamID;
-							document.getElementById(newExamID).innerHTML += "<p>Exam Number:"+newExamID+" Instructor: "+examArray[1]+"<p>";
+							document.getElementById(newExamID).innerHTML += "<h2>"+examTitle+"</h2>";
+							document.getElementById(newExamID).innerHTML += "<h3>For: "+exam.instructor+"</h3>";
 							document.getElementById(newExamID).innerHTML += "<button type='button' onclick='TakeExam("+newExamID+")'>Take Exam</button>\n";
 						}	
 					}
@@ -65,7 +67,8 @@
 								window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_actuallyTakeExam.html";
 								break;
 							case "taken":
-								document.getElementById("words").innerHTML = "Exam already taken!";
+								document.getElementById("alert").innerHTML = "Exam already taken";
+								document.body.scrollTop = 0;
 								break;
 							default:
 								break;
@@ -86,16 +89,16 @@
 
 		</script>
 		
-		<form>
-		
-			<p id="words"></p>
-			<br>
+		<form action="">
 			
-			<button type="button" id="backButton">Back to Start Page</button>
-			<br>
-			
-			<div id="examsToTake">
+			<button type="button" id="backButton"><</button>
+			<div style="text-align: center;">
+				<h1>Exams To Take</h1>
+				<div id="alert"></div>
 				
+				<div id="examsToTake">
+					
+				</div>
 			</div>
 		</form>
 

@@ -1,0 +1,59 @@
+body {
+	background-color: rgba(196, 253, 255, 0.3);
+}
+
+h1 {
+	margin: 0px;
+	padding: 5vh;
+	text-decoration: underline;
+	font-size: 48px;
+}
+
+h3 {
+	text-decoration: underline;
+	font-size: 32px;
+	margin: 4px;
+}
+
+p {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 8px;
+}
+
+
+.exam{
+	border-top: 2px dotted black;
+	border-bottom: 2px dotted black;
+	padding: 12px 18px;
+}
+
+button{
+	font-size: 24px;
+	font-weight: bold;
+	background-color: rgba(170, 220, 235, 1);
+	border: 2px solid black;
+	border-radius: 12px;
+	padding: 8px 12px;
+}
+
+.finalizeButton{
+	font-size: 30px;
+	background-color: rgba(155, 190, 210, 1);
+	border: 2px solid black;
+	border-radius: 18px;
+	padding: 12px 18px;
+}
+
+
+#backButton{
+	position: fixed;
+	background-color:red;
+	color:white;
+	border: 2px solid white;
+	border-radius: 48px;
+	padding: 6px 18px;
+	font-size: 48px;
+	font-weight: bold;
+	margin: 12px;
+}

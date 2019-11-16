@@ -3,7 +3,13 @@ textarea {
 }
 
 h1 {
-	font-size: 30px;
+	font-size: 40px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+h2 {
+	font-size: 36px;
 	text-decoration: underline;
 }
 
@@ -42,7 +48,7 @@ td > input[type="text"]{
 
 td{
 	width: 10%;
-	font-size: 16px;
+	font-size: 20px;
 	font-weight: normal;
 	border: 1px solid black;
 }
@@ -59,29 +65,74 @@ select{
 	font-size: 20px;
 }
 
+#backButton{
+	position: fixed;
+	background-color:red;
+	color:white;
+	border: 2px solid white;
+	border-radius: 48px;
+	padding: 6px 18px;
+	font-size: 48px;
+	font-weight: bold;
+	margin: 12px;
+}
+
 #submitQuestionButton{
-	background-color: rgba(52, 235, 88, 1);
-	border: none;
-	padding: 24px 32px;
-	font-size: 24px;
-	margin: 24px;
+	background-color: rgba(240, 231, 194, 1);
+	border: 2px solid black;
+	padding: 18px 24px;
+	font-weight: bold;
+	font-size: 32px;
+	margin: 18px;
 }
 
 #submitExamButton{
-	background-color: rgba(52, 235, 88, 1);
-	border: none;
-	padding: 24px 32px;
-	font-size: 24px;
-	margin: 24px;
+	background-color: rgba(141, 227, 157, 1);
+	border: 2px solid black;
+	padding: 18px 24px;
+	font-weight: bold;
+	font-size: 32px;
+	margin: 18px;
 }
 
-#addToExam{
-	background-color: rgba(52, 235, 88, 1);
-	border: none;
-	padding: 24px 32px;
-	font-size: 24px;
-	margin: 24px;
+.addButton{
+	background-color: rgba(141, 227, 157, 0.6);
+	border: 2px solid black;
+	border-radius: 18px;
+	padding: 6px 12px;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 14px;
 }
+
+.removeButton{
+	background-color: rgba(240, 104, 55, 1);
+	border: 2px solid black;
+	border-radius: 18px;
+	padding: 6px 12px;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 2px;
+}
+
+
+
+
+
+.question{
+	border: 2px dotted black;
+	padding: 12px 18px;
+}
+
+#question_text{
+	font-size: 26px;
+}
+
+
+
+
+
+
 
 .split {
   height: 100%;

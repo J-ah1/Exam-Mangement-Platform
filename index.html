@@ -36,11 +36,11 @@
 								window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/student_start.html";
 								break;
 							case "invalid_user":
-								alert("Invaid User/Pass. Please try again.");
+								document.getElementById("alert").innerHTML = "<p>Invaid User/Pass. Please try again.</p>";
 								document.getElementById("loginForm").reset();
 								break;
 							case "invalid_form":
-								alert("Form not received. Please try again.");
+								document.getElementById("alert").innerHTML = "<p>Form not received. Please try again.</p>";
 								break;
 							default:
 								console.log("Error: responseText value not accounted for.")
@@ -90,6 +90,9 @@
 				<label for="pass">Password</label>
 				<input type="password" id="pass" autocomplete="off" required>
 				<br><br>
+				
+				<div id="alert">
+				</div>
 				
 				<button type="button" id="submitButton" onclick="SendLogin()">Login</button>
 

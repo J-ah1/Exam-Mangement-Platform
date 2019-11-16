@@ -13,7 +13,7 @@
 		
 		<script type="text/javascript" src="front.js"></script>
 
-		<title>CS490 Project - Instructor</title>
+		<title>Instructor Creation Page</title>
 		
 	</head>
 	<body>
@@ -28,7 +28,13 @@
 				var question_titleVal = document.getElementById("questionTitle").value;
 				var question_textVal = document.getElementById("question").value;
 				var difficultyVal = document.getElementById("difficulty").value;
+				var funcNameVal = document.getElementById("functionName").value;
 				var topicVal = document.getElementById("topic").value;
+				
+				if(question_textVal ==  "" || question_textVal == "" || funcNameVal == ""){
+					document.getElementById("questionAlert").innerHTML = "<p>Please write to all textboxes</p>";
+					return;
+				}
 				
 				var requirementsVal = "";
 				for(e of document.getElementsByName("requirement")){
@@ -46,6 +52,10 @@
 				var argumentsVal = "";
 				var test_casesVal = "";
 				for(e of document.getElementsByName("argName")){
+					if(e.value == ""){
+						document.getElementById("questionAlert").innerHTML = "<p>Please write to all textboxes</p>";
+						return;
+					}
 					argumentsVal += e.value + ",";
 				}
 				if(argumentsVal.length > 0){
@@ -54,8 +64,11 @@
 				
 				for(e of document.getElementsByName("testCase")){
 					for (eChild of e.childNodes){
-						console.log(eChild.nodeName);
 						if(eChild.nodeName == "INPUT"){
+							if(eChild.value == ""){
+								document.getElementById("questionAlert").innerHTML = "<p>Please write to all textboxes</p>";
+								return;
+							}
 							test_casesVal += eChild.value + "==";
 						}
 					}
@@ -64,6 +77,7 @@
 					}
 					test_casesVal += ":";
 				}
+				
 				if(test_casesVal.length > 0){
 					test_casesVal = test_casesVal.substring(0, test_casesVal.length -1);
 				}		
@@ -76,6 +90,7 @@
 					"&topic=" + topicVal +
 					"&requirements=" + requirementsVal +
 					"&output=" + outputVal +
+					"&function_name=" + funcNameVal +
 					"&arguments=" + argumentsVal +
 					"&test_cases=" + test_casesVal;
 				
@@ -83,9 +98,9 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){
-						console.log(this.responseText);
-						console.log("Reset!");
+						document.getElementById("questionAlert").innerHTML = "";
 						document.getElementById("questionForm").reset();
+						mustCheckArgs(document.getElementById("numOfArgs"));
 						// Likely a better way to add that one question to bank...
 						GetAllQuestions();
 					}
@@ -113,7 +128,7 @@
 				var numTestCases = document.getElementById("numOfTestCases").value;
 				document.getElementById("testCases").innerHTML = "";
 				for(let x = 1; x <= numTestCases; x++){
-					var htmlToAdd = "<h3>Test Case " + x.toString() + "</h3><div name='testCase'><p>Arguments:</p><input name='testCaseArgs' type='text'><br><p>Output:</p><input name='testCaseOuput' type='text'><br><br></div>"
+					var htmlToAdd = "<h3>Test Case " + x.toString() + "</h3><div name='testCase'><p>Arguments:</p><input name='testCaseArgs' type='text'><br><p>Output:</p><input name='testCaseOuput' type='text'></div><br>"
 					document.getElementById("testCases").innerHTML += htmlToAdd;
 				}
 			}
@@ -128,13 +143,11 @@
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){
 						console.log(this.responseText);
-						console.log("Attempted to send!");
 						if(this.responseText == "examData not set"){
 							return;
 						}
 						var questionBank = this.responseText.split("</br></br>");
 						questionBank.pop();
-						console.log(questionBank);
 						//questionBank = JSON.parse(this.responseText);
 						for(question of questionBank){
 							question = JSON.parse(question);
@@ -145,18 +158,24 @@
 								continue;
 							}
 
-							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID'><br></div>";
+							document.getElementById("queriedQuestions").innerHTML += "<div name='question' id='placeholderID' class='question'></div>";
 							
 							document.getElementById("placeholderID").id = newQuestionID;
 							
-							document.getElementById(newQuestionID).innerHTML += "<button type='button' id='addToExam' onclick='AddToExam("+JSON.stringify(question)+")'>Add to Exam</button>";
-							document.getElementById(newQuestionID).innerHTML += "<h3>"+question.question_title+"</h3>";
-							document.getElementById(newQuestionID).innerHTML += "<p id='question_text'>"+question.question_text+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p id='question_difficulty'>Difficulty: "+question.difficulty+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p id='question_topic'>Topic: "+question.topic+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Requirements: "+question.requirements+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Arguments: "+question.arguments+"<p>";
-							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+question.output+"<p>";
+							
+							
+							document.getElementById(newQuestionID).innerHTML += "<button type='button' class='addButton' onclick='AddToExam("+JSON.stringify(question)+")'>+</button>";
+							document.getElementById(newQuestionID).innerHTML += "<h3 style='text-decoration: underline;'>"+question.question_title+"</h3>";
+							document.getElementById(newQuestionID).innerHTML += "<p id='question_text'>"+question.question_text+"</p>";
+							document.getElementById(newQuestionID).innerHTML += "<p id='question_difficulty'>Difficulty: "+question.difficulty+"</p>";
+							document.getElementById(newQuestionID).innerHTML += "<p id='question_topic'>Topic: "+question.topic+"</p>";
+							if(question.requirements == ""){
+								question.requirements = "none";
+							}
+							document.getElementById(newQuestionID).innerHTML += "<p>Loop Requirements: "+question.requirements+"</p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Function Name: "+question.function_name+"</p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Argument Name(s): "+question.arguments+"</p>";
+							document.getElementById(newQuestionID).innerHTML += "<p>Output Type: "+question.output+"</p><br>";
 						}
 						
 						QueryQuestions();
@@ -173,13 +192,22 @@
 			function SubmitExam(){
 
 				var examData = ""
+				var examTitleVal = document.getElementById("examTitle").value;
 				
-				// SHOULD INSTEAD
-				// Go through all questions in exam table
+				if(examTitleVal == ""){
+					document.getElementById("examAlert").innerHTML = "<p>Please name the exam</p>";
+					return;
+				}
+				
+				if(document.getElementsByName("questionRow").length == 0){
+					document.getElementById("examAlert").innerHTML = "<p>Please add question(s) to exam</p>";
+					return;
+				}
+				
 				for(e of document.getElementsByName("questionRow")){
 					var inputEleVal = e.childNodes[4].childNodes[0].value;
 					if(!Number.isInteger(parseInt(inputEleVal))){
-						alert("All point values must be assigned correctly!");
+						document.getElementById("examAlert").innerHTML = "<p>Please assign proper point values to questions</p>";
 						return;
 					}
 					examData += e.id + "," + inputEleVal + ":";
@@ -188,16 +216,15 @@
 					examData = examData.substring(0, examData.length -1);
 				}				
 				
-				//examData += "*" + document.getElementById("totalPoints").innerHTML;
-				var sendStr = "exam=" + examData;
+				
+				var sendStr = "exam=" + examData + "&exam_title=" + examTitleVal;
 				console.log(sendStr);
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){
-						console.log("Attempted to send!")
 						console.log(this.responseText);
 						if(this.responseText != "invalid_form"){
-							console.log("Reset!");
+							document.getElementById("examAlert").innerHTML = "";
 							document.getElementById("examForm").reset();
 							QueryQuestions();
 							document.getElementById("totalPoints").innerHTML = 0;
@@ -230,7 +257,6 @@
 				var diffFilter = document.getElementById("difficultyFilterBox").value;
 				var topicFilter = document.getElementById("topicFilterBox").value;
 				
-				console.log("Should update show/hide questions...");
 				for(e of document.getElementsByName("question")){
 					e.style.display = "block";
 					for(c of e.childNodes){
@@ -257,13 +283,13 @@
 			function AddToExam(qObj){
 				for(e of document.getElementsByName('questionRow')){
 					if(e.id == qObj.question_id){
-						alert("Question already added to exam");
+						document.getElementById("examAlert").innerHTML = "<p>Question already added to exam</p>";
 						return;
 					}
 				}
 				
-				var rowToAdd = "<tr name='questionRow' id='"+qObj.question_id+"'><td>"+qObj.question_title+ "</td><td>"+qObj.difficulty+"</td><td>"+qObj.topic+"</td><td style='width50%'>"+qObj.question_text+"</td><td><input type='text' maxlength='3' onchange='UpdateTotal()'></td><td><button type='button' onclick='RemoveQuestion(this.parentNode.parentNode.rowIndex)'>Remove Question</button></td></tr>";
-				//document.getElementById("examTable").innerHTML += rowToAdd;
+				var rowToAdd = "<tr name='questionRow' id='"+qObj.question_id+"'><td>"+qObj.question_title+ "</td><td>"+qObj.difficulty+"</td><td>"+qObj.topic+"</td><td style='width50%'>"+qObj.question_text+"</td><td><input type='text' maxlength='3' onchange='UpdateTotal()'></td><td><button type='button' class='removeButton' onclick='RemoveQuestion(this.parentNode.parentNode.rowIndex)'>-</button></td></tr>";
+				
 				document.getElementById("examTable").innerHTML += (rowToAdd);
 			}
 		
@@ -295,7 +321,7 @@
 	
 		<form id="questionForm" action="">
 		
-			<button type="button" id="backButton">Back to Start Page</button>
+			<button type="button" id="backButton"><</button>
 			
 			<div class="split left">
 				<div class="centered">
@@ -307,6 +333,7 @@
 						<h3>Question Title</h3>
 						<br>
 						<input type="text" id="questionTitle">
+						<br>
 						<br>
 						
 						<h3>Enter Question:</h3>
@@ -353,6 +380,12 @@
 						<br>
 						<br>
 						
+						<h3>Function Name</h3>
+						<br>
+						<input type="text" id="functionName">
+						<br>
+						<br>
+						
 						<h3>Number of arguments: </h3>
 						<select id="numOfArgs" onchange="mustCheckArgs(this)">
 							<option value="1">1</option>
@@ -395,19 +428,22 @@
 							<p>Arguments:</p><input name='testCaseArgs' type='text'>
 							<br>
 							<p>Output:</p><input name='testCaseOuput' type='text'>
-							<br>
 						</div>
+						<br>
 						<h3>Test Case 2</h3>
 						<div name='testCase'>
 							<p>Arguments:</p><input name='testCaseArgs' type='text'>
 							<br>
 							<p>Output:</p><input name='testCaseOuput' type='text'>
-							<br>
 						</div>
+						<br>
 					</div>
 						
 					<br>
 						
+					<div id="questionAlert">
+					</div>	
+					
 					<div>
 						<button type="button" id="submitQuestionButton" onclick="SendQuestion()">Submit To Bank</button>
 					</div>
@@ -428,6 +464,7 @@
 					<br>
 					<input type="text" id="examTitle">
 					<br>
+					<br>
 					<div id="examBeingCreated">
 						
 						<table id="examTable">
@@ -443,18 +480,23 @@
 						
 						<br>
 						
-						<p style="display:inline;">Total Points: </p>
-						<p style="display:inline;" id="totalPoints">0</p>
+						<p style="display:inline; font-weight:bold;">Total Points: </p>
+						<p style="display:inline; font-weight:bold;" id="totalPoints">0</p>
 						<br>
 						
-						<button type="button" id="submitExamButton"onclick="SubmitExam()">Submit Exam</button>
+						<div id="examAlert">
+						</div>	
+						
+						
+						<button type="button" id="submitExamButton" onclick="SubmitExam()">Submit Exam</button>
 					</div>
 					
 					<br>
 					<br>
 					
-					<h3>Search Question Bank</h3>
+					<h2>Question Bank</h2>
 					<div>
+							<h3>Keyword Search: </h3>
 							<input id="questionSearchBox" type="text" onchange="QueryQuestions()">
 							<br>
 							<h3>Filter Difficulty: </h3>
@@ -472,6 +514,7 @@
 								<option value="string">Strings</option>
 							</select>
 					<div>
+					<br>
 					<div id="queriedQuestions">
 						
 					</div>

@@ -13,7 +13,7 @@
 		
 		<script type="text/javascript" src="front.js"></script>
 
-		<title>CS490 Project - Instructor</title>
+		<title>Instructor Exam Grading Page</title>
 		
 	</head>
 	<body>
@@ -39,6 +39,9 @@
 							document.getElementById(jObj.question_id).innerHTML += "<p>Question: " + jObj.question_text + "</p>";
 							document.getElementById(jObj.question_id).innerHTML += "<p>Response: </p>";
 							document.getElementById(jObj.question_id).innerHTML += "<p style='white-space: pre'>" + jObj.response + "</p>";
+							
+							document.getElementById(jObj.question_id).innerHTML += "<table><tr><th>Auto-Grader Deductions</th></tr><tr><td>"+ jObj.deductions +"</td></tr></table>"
+							
 							document.getElementById(jObj.question_id).innerHTML += "<p>Score: <input class='points' type='text' value='" + jObj.points + "' onchange='UpdateTotal()'> out of " + jObj.total + " </p>" ;
 							document.getElementById(jObj.question_id).innerHTML += "<p>Comment: </p><textarea class='comment' rows='10' cols='60'>" + jObj.comment + "</textarea>";
 							document.getElementById("totalTotals").innerHTML = parseInt(document.getElementById("totalTotals").innerHTML) + parseInt(jObj.total);
@@ -61,7 +64,7 @@
 				var pointsVal = "";
 				for(e of document.getElementsByClassName("points")){
 					if(!Number.isInteger(parseInt(e.value))){
-						document.getElementById("words").innerHTML = "All point values must be assigned correctly!";
+						document.getElementById("alert").innerHTML = "<p>Please assign proper point values</p>";
 						return;
 					}
 					pointsVal += e.value + ",";
@@ -119,7 +122,7 @@
 	
 		<form action="">
 		
-			<button type="button" id="backButton">Back to Exam Grade Page</button>
+			<button type="button" id="backButton"><</button>
 		
 			<div id="examStudInfo">
 			
@@ -129,11 +132,16 @@
 				
 			</div>
 			
-			Student Total Points
-			<p id="totalPoints">0</p>
-			Total Possible Points
-			<p id="totalTotals">0</p>
-			<p id="words"></p>
+			<p style="display:inline;">Student Points: </p>
+			<p style="display:inline;" id="totalPoints">0</p>
+			<br>
+			
+			<p style="display:inline;">Total Possible Points: </p>
+			<p style="display:inline;" id="totalTotals">0</p>
+			
+			<div id="alert">
+			</div>
+			
 			<button type="button" onclick="UpdateExam()">Update Exam</button>
 	
 		</form>
