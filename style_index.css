@@ -7,6 +7,25 @@ form {
 	margin-top: 15vh;
 }
 
-button {
+h1 {
+	padding-top: 12px;
+	padding-bottom: 18px;
+	font-size: 32px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+label {
 	font-size: 20px;
+	margin-right: 5px;
+}
+
+input {
+	font-size: 18px;
+	height: 18px;
+	width: 180px;
+}
+
+button {
+	font-size: 26px;
 }

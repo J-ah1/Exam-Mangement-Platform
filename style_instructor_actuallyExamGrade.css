@@ -2,8 +2,75 @@ body {
 	background-color: rgba(196, 253, 255, 0.3);
 }
 
+h1 {
+	font-size: 38px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+
+p {
+	font-size: 32px;
+}
+
+.question {
+	border-top: 2px dotted black;
+	border-bottom: 2px dotted black;
+	padding-left: 20vw;
+	padding-right: 20vw;
+}
+
+.question_text{
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.question_response{
+	white-space: pre;
+	background-color: rgba(235,235,235,0.7);
+	font-size: 18px;
+	resize: none;
+	width: 700px;
+	height: 340px;
+}
+
+
+.question_score{
+	font-size: 24px;
+}
+
+input{
+	font-size: 18px;
+}
+
+.question_comment{
+	font-size: 18px;
+	resize: none;
+	width: 580px;
+	height: 300px;
+	margin-bottom: 28px;
+}
+
+
+
+table {
+	font-size: 18px;
+	margin-top: 20px;
+	margin-left:auto;
+	margin-right:auto;
+	
+}
+
 table, th, td {
   border: 1px solid black;
+}
+
+
+
+.points{
+	font-size: 24px;
+	height: 24px;
+	width: 48px;
 }
 
 
@@ -18,3 +85,15 @@ table, th, td {
 	font-weight: bold;
 	margin: 12px;
 }
+
+#updateButton{
+	background-color: rgba(141, 227, 157, 1);
+	border: 2px solid black;
+	padding: 18px 24px;
+	font-weight: bold;
+	font-size: 32px;
+	margin: 18px;
+}
+
+
+

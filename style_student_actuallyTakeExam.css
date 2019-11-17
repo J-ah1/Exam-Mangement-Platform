@@ -1,3 +1,39 @@
 body {
+	padding-top: 18px;
+	padding-bottom: 18px;
 	background-color: rgba(196, 253, 255, 0.3);
+	text-align: center;
+}
+
+.question {
+	border-top: 2px dotted black;
+	border-bottom: 2px dotted black;
+	padding-left: 20vw;
+	padding-right: 20vw;
+	padding-bottom: 18px; 
+}
+
+
+.question_text {
+	font-size: 26px;
+}
+
+.question_points{
+	font-size: 26px;
+}
+
+.question_response {
+	font-size: 18px;
+	resize: none;
+	width: 700px;
+	height: 340px;
+}
+
+#submitButton {
+	background-color: rgba(141, 227, 157, 1);
+	border: 2px solid black;
+	padding: 18px 24px;
+	font-weight: bold;
+	font-size: 32px;
+	margin: 18px;
 }

@@ -20,6 +20,25 @@
 		<script>
 		
 			CheckLogin("instructor");
+			
+			var studentID = "";
+			
+			function GetGradeStudentID() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function(){
+					if(this.readyState == 4 && this.status == 200){
+						if(this.responseText == "studentID not set"){
+							console.log(this.responseText);
+							return;
+						}
+						studentID = this.responseText;
+					}
+				}
+				xhttp.open("POST","getGradeStudentID.php",true);
+				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhttp.send();
+      }
+			
 		
 			function SetupGrading() {
 				var xhttp = new XMLHttpRequest();
@@ -28,22 +47,19 @@
 						console.log("Attempted to send!");
 						console.log(this.responseText);
 						
-						
-						// First, we'll need to place the student and exam id at the top...
-						// technically can do this later
-						// Afterwards, go through questions json and display questions
-						
 						var jList = JSON.parse(this.responseText);
+						
+						document.getElementById("examStudInfo").innerHTML = "<h1>Exam of Student: " + studentID + "</h1>";
+						
 						for(jObj of jList){
 							document.getElementById("questionsToGrade").innerHTML += "<div class='question' id='"+ jObj.question_id + "'></div>";
-							document.getElementById(jObj.question_id).innerHTML += "<p>Question: " + jObj.question_text + "</p>";
-							document.getElementById(jObj.question_id).innerHTML += "<p>Response: </p>";
-							document.getElementById(jObj.question_id).innerHTML += "<p style='white-space: pre'>" + jObj.response + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p class='question_text'>" + jObj.question_text + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<textarea readonly class='question_response'>" + jObj.response + "</textarea>";
 							
 							document.getElementById(jObj.question_id).innerHTML += "<table><tr><th>Auto-Grader Deductions</th></tr><tr><td>"+ jObj.deductions +"</td></tr></table>"
 							
-							document.getElementById(jObj.question_id).innerHTML += "<p>Score: <input class='points' type='text' value='" + jObj.points + "' onchange='UpdateTotal()'> out of " + jObj.total + " </p>" ;
-							document.getElementById(jObj.question_id).innerHTML += "<p>Comment: </p><textarea class='comment' rows='10' cols='60'>" + jObj.comment + "</textarea>";
+							document.getElementById(jObj.question_id).innerHTML += "<p class='question_score'>Score: <input class='points' type='text' value='" + jObj.points + "' onchange='UpdateTotal()' maxlength='3'> out of " + jObj.total + " </p>" ;
+							document.getElementById(jObj.question_id).innerHTML += "<p style='font-size:24px; margin-bottom:4px;'>Instructor Comment(s)</p><textarea class='question_comment' rows='10' cols='60'>" + jObj.comment + "</textarea>";
 							document.getElementById("totalTotals").innerHTML = parseInt(document.getElementById("totalTotals").innerHTML) + parseInt(jObj.total);
 						}
 						if(document.getElementsByClassName("points")){
@@ -57,7 +73,7 @@
 				xhttp.send();
       }
 			
-			SetupGrading();
+
 
 			function UpdateExam() {
 			
@@ -111,6 +127,11 @@
 			
 
 			window.onload = function(){
+			
+				GetGradeStudentID();
+			
+				SetupGrading();
+			
 				document.getElementById("backButton").onclick = function () {
 					window.location.href = "http://afsaccess4.njit.edu/~jaa75/cs490/instructor_examGrade.html";
 				};
@@ -124,25 +145,30 @@
 		
 			<button type="button" id="backButton"><</button>
 		
-			<div id="examStudInfo">
-			
-			</div>
-
-			<div id="questionsToGrade">
+			<div style="text-align: center; padding-bottom: 20px; padding-top: 10px;">
+		
+				<div id="examStudInfo">
 				
+				</div>
+
+				<div id="questionsToGrade">
+					
+				</div>
+				<br>
+				
+				<p style="display:inline;">Student Points: </p>
+				<p style="display:inline;" id="totalPoints">0</p>
+				<br>
+				
+				<p style="display:inline;">Total Possible Points: </p>
+				<p style="display:inline;" id="totalTotals">0</p>
+				
+				<div id="alert">
+				</div>
+				
+				<button id="updateButton" type="button" onclick="UpdateExam()">Update Exam</button>
+			
 			</div>
-			
-			<p style="display:inline;">Student Points: </p>
-			<p style="display:inline;" id="totalPoints">0</p>
-			<br>
-			
-			<p style="display:inline;">Total Possible Points: </p>
-			<p style="display:inline;" id="totalTotals">0</p>
-			
-			<div id="alert">
-			</div>
-			
-			<button type="button" onclick="UpdateExam()">Update Exam</button>
 	
 		</form>
 
