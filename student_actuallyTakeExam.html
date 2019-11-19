@@ -111,7 +111,8 @@
 				}
 				
 				var sendStr = "response=" + responseVal;
-				
+				sendStr = sendStr.replace(/\\/g, "\\\\");
+				sendStr = sendStr.replace(/\+/g, "%2B");
 				console.log(sendStr);
 				
 				var xhttp = new XMLHttpRequest();

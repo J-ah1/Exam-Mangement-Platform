@@ -39,7 +39,7 @@
 				var requirementsVal = "";
 				for(e of document.getElementsByName("requirement")){
 					if(e.checked == true){
-						requirementsVal += e.value + ","
+						requirementsVal += e.value.replace(/\s/g,'') + ",";
 					}
 				}
 				if(requirementsVal.length > 0){
@@ -56,7 +56,7 @@
 						document.getElementById("questionAlert").innerHTML = "<p>Please write to all textboxes</p>";
 						return;
 					}
-					argumentsVal += e.value + ",";
+					argumentsVal += e.value.replace(/\s/g,'') + ",";
 				}
 				if(argumentsVal.length > 0){
 					argumentsVal = argumentsVal.substring(0, argumentsVal.length -1);
@@ -69,7 +69,7 @@
 								document.getElementById("questionAlert").innerHTML = "<p>Please write to all textboxes</p>";
 								return;
 							}
-							test_casesVal += eChild.value + "==";
+							test_casesVal += eChild.value.replace(/\s/g,'') + "==";
 						}
 					}
 					if(test_casesVal.length > 0){
@@ -82,7 +82,7 @@
 					test_casesVal = test_casesVal.substring(0, test_casesVal.length -1);
 				}		
 				
-				
+				console.log(question_textVal);
 				var sendStr =
 					"question_title=" + question_titleVal + 
 					"&question_text=" + question_textVal +
@@ -93,21 +93,22 @@
 					"&function_name=" + funcNameVal +
 					"&arguments=" + argumentsVal +
 					"&test_cases=" + test_casesVal;
-				
+				sendStr = sendStr.replace(/\\/g, "\\\\");
+				sendStr = sendStr.replace(/\+/g, "%2B");
 				console.log(sendStr);
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){
+						console.log(this.responseText);
 						document.getElementById("questionAlert").innerHTML = "";
 						document.getElementById("questionForm").reset();
 						mustCheckArgs(document.getElementById("numOfArgs"));
+						UpdateTestCases();
 						// Likely a better way to add that one question to bank...
 						GetAllQuestions();
 					}
 				}
-				
 				xhttp.open("POST","http://afsaccess4.njit.edu/~lta2/CS490/middlebetaTQ.php",true);
-				
 				xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				xhttp.send(sendStr);
       }
@@ -226,6 +227,7 @@
 						if(this.responseText != "invalid_form"){
 							document.getElementById("examAlert").innerHTML = "";
 							document.getElementById("examForm").reset();
+							document.getElementById("examTable").innerHTML = "<tr><th>Title</th><th>Difficulty</th><th>Topic</th><th style='width:50%;'>Text</th><th>Points</th><th></th></tr>"
 							QueryQuestions();
 							document.getElementById("totalPoints").innerHTML = 0;
 						}
@@ -420,7 +422,7 @@
 					</select>
 					
 					
-					<p>Note: Test case arguments and outputs must be comma seperated</p>
+					<p>Note: Test case arguments and outputs must be comma seperated. Surround strings with double quotes (ex. "thing").</p>
 					<br>
 					<div id="testCases">
 						<h3>Test Case 1</h3>
@@ -475,6 +477,7 @@
 								<th style='width:50%;'>Text</th>
 								<th>Points</th>
 								<th></th>
+							</tr>
 						</table>
 						
 						

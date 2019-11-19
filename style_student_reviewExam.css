@@ -1,6 +1,48 @@
+/* student_reviewExam.html */
+
 body {
 	background-color: rgba(196, 253, 255, 0.3);
 }
+
+h1 {
+	margin: 0px;
+	padding: 5vh;
+	text-decoration: underline;
+	font-size: 48px;
+}
+
+h2 {
+	font-size: 36px;
+	margin-bottom: 2px;
+}
+
+h3 {
+	margin-top: 0px;
+	margin-bottom: 8px;
+	font-size: 22px;
+}
+
+p {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 8px;
+}
+
+
+button{
+	font-size: 24px;
+	background-color: rgba(170, 220, 235, 1);
+	border: 2px solid black;
+}
+
+.exam{
+	border-top: 2px dotted black;
+	border-bottom: 2px dotted black;
+	padding-top: 6px;
+	padding-bottom: 30px;
+}
+
+
 
 #backButton{
 	position:fixed;

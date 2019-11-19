@@ -1,6 +1,47 @@
+/* style_student_actuallyReviewExam.css */
+
 body {
 	background-color: rgba(196, 253, 255, 0.3);
 }
+
+
+.question {
+	border-top: 2px dotted black;
+	border-bottom: 2px dotted black;
+	padding-left: 20vw;
+	padding-right: 20vw;
+}
+
+.question_text{
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.question_response{
+	white-space: pre;
+	background-color: rgba(235,235,235,0.7);
+	font-size: 18px;
+	resize: none;
+	width: 700px;
+	height: 340px;
+}
+
+.question_score{
+	font-size: 24px;
+}
+
+.question_comment{
+	white-space: pre;
+	background-color: rgba(235,235,235,0.7);
+	font-size: 18px;
+	resize: none;
+	width: 580px;
+	height: 300px;
+	margin-bottom: 28px;
+}
+
+
+
 
 #backButton{
 	position: fixed;

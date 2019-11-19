@@ -54,9 +54,20 @@
 						for(jObj of jList){
 							document.getElementById("questionsToGrade").innerHTML += "<div class='question' id='"+ jObj.question_id + "'></div>";
 							document.getElementById(jObj.question_id).innerHTML += "<p class='question_text'>" + jObj.question_text + "</p>";
-							document.getElementById(jObj.question_id).innerHTML += "<textarea readonly class='question_response'>" + jObj.response + "</textarea>";
+							document.getElementById(jObj.question_id).innerHTML += "<p style='font-size:24px; margin-bottom:4px;'>Student Response</p><textarea readonly class='question_response'>" + jObj.response + "</textarea>";
 							
-							document.getElementById(jObj.question_id).innerHTML += "<table><tr><th>Auto-Grader Deductions</th></tr><tr><td>"+ jObj.deductions +"</td></tr></table>"
+							var addToTable = "";
+							for(d of jObj.deductions.split("|||")){
+								if(d == ""){
+									continue;
+								}
+								var reason = d.split("(((");
+								var deduction = reason[1];
+								reason = reason[0];
+								addToTable += "<tr><td>"+reason+"</td><td>"+deduction+"</tr>";
+							}
+							
+							document.getElementById(jObj.question_id).innerHTML += "<table><tr><th>Reason</th><th>Deductions</th></tr>"+ addToTable +"</tr></table>";
 							
 							document.getElementById(jObj.question_id).innerHTML += "<p class='question_score'>Score: <input class='points' type='text' value='" + jObj.points + "' onchange='UpdateTotal()' maxlength='3'> out of " + jObj.total + " </p>" ;
 							document.getElementById(jObj.question_id).innerHTML += "<p style='font-size:24px; margin-bottom:4px;'>Instructor Comment(s)</p><textarea class='question_comment' rows='10' cols='60'>" + jObj.comment + "</textarea>";
@@ -90,7 +101,7 @@
 				}
 			
 				var commentVal = "";
-				for(e of document.getElementsByClassName("comment")){
+				for(e of document.getElementsByClassName("question_comment")){
 					commentVal += e.value + "~~~";
 				}
 				if(commentVal.length > 0){
@@ -98,6 +109,9 @@
 				}
 			
 				var sendStr = "points=" + pointsVal + "&comments=" + commentVal;
+				sendStr = sendStr.replace(/\\/g, "\\\\");
+				sendStr = sendStr.replace(/\+/g, "%2B");
+				console.log(sendStr);
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function(){
 					if(this.readyState == 4 && this.status == 200){

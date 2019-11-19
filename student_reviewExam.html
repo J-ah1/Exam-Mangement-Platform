@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- student_reviewExam.html -->
 <html>
 	<head>
 
@@ -30,15 +31,14 @@
 						if(this.responseText == "userName not set"){
 							return;
 						}
+						
 						var jList = JSON.parse(this.responseText);
 						for(jObj of jList){
 							document.getElementById("examsToReview").innerHTML += "<div class='exam' id='" + jObj.exam_id + "'></div>"
-							document.getElementById(jObj.exam_id).innerHTML += "<p>Exam Title: " + jObj.exam_title + "</p>";
-							document.getElementById(jObj.exam_id).innerHTML += "<p>ExamID: " + jObj.exam_id + "</p>";
-							document.getElementById(jObj.exam_id).innerHTML += "<p>InstructorID: </p>" + jObj.instructor + "</p>";
-							document.getElementById(jObj.exam_id).innerHTML += "<p>Points: " + jObj.points + "</p>";
-							document.getElementById(jObj.exam_id).innerHTML += "<p>Total: </p>" + jObj.total + "</p>";
-							document.getElementById(jObj.exam_id).innerHTML += "<button type='button' onclick='ReviewExam(" + jObj.exam_id + ")'>Review Exam</button>\n";
+							document.getElementById(jObj.exam_id).innerHTML += "<h2>"+jObj.exam_title+"</h2>";
+							document.getElementById(jObj.exam_id).innerHTML += "<h3>For: "+jObj.instructor+"</h3>";
+							document.getElementById(jObj.exam_id).innerHTML += "<p>Score: " + jObj.points + "/" + jObj.total + "</p>";
+							document.getElementById(jObj.exam_id).innerHTML += "<button type='button' onclick='ReviewExam(" + jObj.exam_id + ")'>Review Exam</button><br>";
 						}
 						
 					}
@@ -97,9 +97,13 @@
 		
 			<button type="button" id="backButton"><</button>
 
-			<div id="examsToReview">
-				
+			<div style="text-align: center;">
+				<h1>Exams To Review</h1>
+				<div id="examsToReview">
+					
+				</div>
 			</div>
+	
 	
 		</form>
 

@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- student_actuallyReviewExam.html -->
+
 <html>
 	<head>
 
@@ -27,24 +29,26 @@
 					if(this.readyState == 4 && this.status == 200){
 						console.log("Attempted to send!");
 						console.log(this.responseText);
-						
-						
-						// First, we'll need to place the exam id at the top...
-						// technically can do this later
-						// Afterwards, go through questions json and display questions
-						
+					
+						var pointsTotal = 0;
+						var totalTotal = 0;
+					
 						var jList = JSON.parse(this.responseText);
 						for(jObj of jList){
 							console.log(jObj.question_id);
 							document.getElementById("questionsToReview").innerHTML += "<div class='question' id='"+jObj.question_id+"'></div>";
-							document.getElementById(jObj.question_id).innerHTML += "<p>Question: " + jObj.question_text + "</p>";
-							document.getElementById(jObj.question_id).innerHTML += "<p>Response: " + jObj.response + "</p>";
-							document.getElementById(jObj.question_id).innerHTML += "<p>Score: " + jObj.points + " out of " + jObj.total + " </p>" ;
-							document.getElementById(jObj.question_id).innerHTML += "<p>Comment: " + jObj.comment + "</textarea>";
-							document.getElementById("totalStudentPoints").innerHTML = parseInt(document.getElementById("totalStudentPoints").innerHTML) + parseInt(jObj.points);
-							document.getElementById("totalTotals").innerHTML = parseInt(document.getElementById("totalTotals").innerHTML) + parseInt(jObj.total);
+							document.getElementById(jObj.question_id).innerHTML += "<p class='question_text'>" + jObj.question_text + "</p>";
+							document.getElementById(jObj.question_id).innerHTML += "<p style='font-size:24px; margin-bottom:4px;'>Your Response</p><textarea readonly class='question_response'>" + jObj.response + "</textarea>";
+							document.getElementById(jObj.question_id).innerHTML += "<p class='question_score'>Score: " + jObj.points + "/" + jObj.total + " </p>" ;
+							document.getElementById(jObj.question_id).innerHTML += "<p style='font-size:24px; margin-bottom:4px;'>Instructor Comment(s)</p><textarea readonly class='question_comment'>" + jObj.comment + "</textarea>";
+						
+							pointsTotal += parseInt(jObj.points);
+							totalTotal += parseInt(jObj.total);
+							
 						}
 						
+						document.getElementById("totalPoints").innerHTML = pointsTotal;
+						document.getElementById("totalTotals").innerHTML = totalTotal;	
 						
 					}
 				}
@@ -71,20 +75,25 @@
 	
 		<form action="">
 		
-			<button type="button" id="backButton">Back to Review Exam Page</button>
+			<button type="button" id="backButton"><</button>
 		
-			<div id="examInfo">
-			
-			</div>
+			<div style="text-align: center; padding-bottom: 30px; padding-top: 10px;">
+		
+				<div id="examInfo" style="margin:16px;">
+					<p style="display:inline; font-size:28px; font-weight:bold;">Total: </p>
+					<p style="display:inline; font-size:28px; font-weight:bold;" id="totalPoints">0</p>
+					
+					<p style="display:inline; font-size:28px; font-weight:bold;">/</p>
+					<p style="display:inline; font-size:28px; font-weight:bold;" id="totalTotals">0</p>
+				</div>
 
-			<div id="questionsToReview">
+				<div id="questionsToReview">
+					
+				</div>
 				
-			</div>
+				
 			
-			Student Total Points
-			<p id="totalStudentPoints">0</p>
-			Total Possible Points
-			<p id="totalTotals">0</p>
+			</div>
 	
 		</form>
 

@@ -1,6 +1,7 @@
 form {
 	border: 1px solid black;
 	padding: 15px;
+	font-size: 20px;
 	text-align: center;
 	width: 400px;
 	margin: auto;
@@ -16,7 +17,6 @@ h1 {
 }
 
 label {
-	font-size: 20px;
 	margin-right: 5px;
 }
 
